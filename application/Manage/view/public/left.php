@@ -30,6 +30,7 @@
                     </a>
                     <dl class="layui-nav-child">
                         <dd><a layui-href="{:url('Category/index')}">品类管理</a></dd>
+                        <dd><a layui-href="{:url('Attribute/index')}">属性管理</a></dd>
                     </dl>
                 </li>
                 <li data-name="Site" class="layui-nav-item">
