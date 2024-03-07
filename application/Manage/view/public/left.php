@@ -31,6 +31,15 @@
                         <dd><a layui-href="{:url('ProcurementContract/index')}">采购合同</a></dd>
                     </dl>
                 </li>
+                <li data-name="Storage" class="layui-nav-item">
+                    <a layui-href="javascript:;" lay-tips="外销编号" lay-direction="2">
+                        <i class="layui-icon iconfont icon-dingdan1"></i>
+                        <cite>外销编号</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a layui-href="{:url('Export/index')}">外销编号</a></dd>
+                    </dl>
+                </li>
                 {if condition="$user.super eq 1"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="基础" lay-direction="2">
@@ -40,6 +49,7 @@
                     <dl class="layui-nav-child">
                         <dd><a layui-href="{:url('Category/index')}">品类管理</a></dd>
                         <dd><a layui-href="{:url('Attribute/index')}">属性管理</a></dd>
+                        <dd><a layui-href="{:url('Port/index')}">港口管理</a></dd>
                     </dl>
                 </li>
                 <li data-name="Site" class="layui-nav-item">
