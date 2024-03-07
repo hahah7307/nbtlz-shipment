@@ -22,6 +22,15 @@
                         <dd><a layui-href="{:url('Sku/index')}">货号领取</a></dd>
                     </dl>
                 </li>
+                <li data-name="Storage" class="layui-nav-item">
+                    <a layui-href="javascript:;" lay-tips="采购合同" lay-direction="2">
+                        <i class="layui-icon iconfont icon-dingdan1"></i>
+                        <cite>采购合同</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a layui-href="{:url('ProcurementContract/index')}">采购合同</a></dd>
+                    </dl>
+                </li>
                 {if condition="$user.super eq 1"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="基础" lay-direction="2">
