@@ -50,4 +50,10 @@ return [
     // TinyMCE模块、插件
     'TINYMCE_PLUGINS'   =>  'print preview searchreplace autolink directionality visualblocks visualchars image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount imagetools textpattern help emoticons axupimgs lineheight',
     'TINYMCE_TOOLBAR'   =>  'removeformat code undo redo | forecolor backcolor bold italic underline strikethrough link table imagetools image media anchor | alignleft aligncenter alignright alignjustify | styleselect | fontselect | fontsizeselect | lineheight | bullist numlist | blockquote subscript superscript removeformat | charmap emoticons hr pagebreak insertdatetime print preview',
+
+    'EXPORT_ABNORMAL'   =>  [
+        1   =>  '甩柜',
+        2   =>  '换船',
+        3   =>  '船期延误',
+    ],
 ];

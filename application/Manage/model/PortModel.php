@@ -10,6 +10,10 @@ class PortModel extends Model
 {
     const STATE_ACTIVE = 1;
 
+    const TYPE_FROM = 1;
+
+    const TYPE_TO = 2;
+
     protected $name = 'port';
 
     protected $resultSetType = 'collection';

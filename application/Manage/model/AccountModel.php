@@ -3,6 +3,8 @@
 namespace app\Manage\model;
 
 use think\Config;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\DbException;
 use think\Model;
 use think\Session;
@@ -85,5 +87,18 @@ class AccountModel extends Model
         } else {
             return [$account['id']];
         }
+    }
+
+    // 获取所有采购人员
+
+    /**
+     * @throws ModelNotFoundException
+     * @throws DbException
+     * @throws DataNotFoundException
+     */
+    static public function get_all_procure()
+    {
+        $userRole = new AdminUserRoleModel();
+        return $userRole->with(['account'])->where(['role_id' => 7])->select();
     }
 }

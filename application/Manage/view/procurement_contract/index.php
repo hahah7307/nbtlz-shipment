@@ -7,7 +7,7 @@
         <div class="title">采购合同列表</div>
         <form class="layui-form search-form" method="get">
             <div class="layui-inline w200">
-                <input type="text" class="layui-input" name="keyword" value="{$keyword}" placeholder="sku/名称">
+                <input type="text" class="layui-input" name="keyword" value="{$keyword}" placeholder="合同号/SKU/产品名称">
             </div>
             <div class="layui-inline w100">
                 <input type="text" class="layui-input" name="page_num" value="{$page_num}" placeholder="每页条数">
