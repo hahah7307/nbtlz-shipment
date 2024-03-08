@@ -12,6 +12,7 @@
             <div class="layui-inline w120">
                 <select name="state" lay-verify="">
                     <option value="-1">状态</option>
+                    <option value="0" {if condition="$state eq 0"}selected{/if}>已废弃</option>
                     <option value="1" {if condition="$state eq 1"}selected{/if}>待排柜</option>
                     <option value="2" {if condition="$state eq 2"}selected{/if}>待分仓</option>
                     <option value="3" {if condition="$state eq 3"}selected{/if}>待出运</option>
@@ -94,6 +95,8 @@
                                     <a href="{:url('edit', ['id' => $v.id])}" class="layui-btn layui-btn-normal layui-btn-sm">待上架</a>
                                 {elseif condition="$v.state eq 8"/}
                                     <a href="{:url('edit', ['id' => $v.id])}" class="layui-btn layui-btn-sm">已上架</a>
+                                {elseif condition="$v.state eq 0"/}
+                                    <a href="{:url('edit', ['id' => $v.id])}" class="layui-btn layui-btn-danger layui-btn-sm">已废弃</a>
                                 {/if}
                                 <a href="{:url('log', ['id' => $v.id])}" class="layui-btn layui-btn-sm">记录</a>
 							</td>

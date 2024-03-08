@@ -15,7 +15,7 @@
                 </li>
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="货号管理" lay-direction="2">
-                        <i class="layui-icon iconfont icon-dingdan1"></i>
+                        <i class="layui-icon iconfont icon-chanpin"></i>
                         <cite>货号管理</cite>
                     </a>
                     <dl class="layui-nav-child">
@@ -24,7 +24,7 @@
                 </li>
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="采购合同" lay-direction="2">
-                        <i class="layui-icon iconfont icon-dingdan1"></i>
+                        <i class="layui-icon iconfont icon-caigou1"></i>
                         <cite>采购合同</cite>
                     </a>
                     <dl class="layui-nav-child">
@@ -33,7 +33,7 @@
                 </li>
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="外销编号" lay-direction="2">
-                        <i class="layui-icon iconfont icon-dingdan1"></i>
+                        <i class="layui-icon iconfont icon-a-36chuyun"></i>
                         <cite>外销编号</cite>
                     </a>
                     <dl class="layui-nav-child">

@@ -105,6 +105,10 @@ class ExportController extends BaseController
             $post = $this->request->post();
             $exportObj = new ExportModel();
             $export = $exportObj->find($id);
+            if ($export['state'] == 0) {
+                echo json_encode(['code' => 0, 'msg' => '无法操作已废弃外销合同']);
+                exit;
+            }
 
             if ($export['state'] == $post['state'] && empty($post['abnormal'])) {
                 echo json_encode(['code' => 0, 'msg' => '请选择新状态或者发生的异常']);
@@ -166,6 +170,13 @@ class ExportController extends BaseController
                 $saveData = [
                     'grounding_date'    =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
                 ];
+            } elseif ($post['state'] == 0) {
+                $saveData = [
+                    'discard_date'      =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
+                ];
+            } else {
+                echo json_encode(['code' => 0, 'msg' => '操作异常']);
+                exit;
             }
             $saveData['state'] = $post['state'];
             $saveData['content'] = $post['content'];
@@ -209,21 +220,5 @@ class ExportController extends BaseController
         $this->assign('abnormal', Config::get('EXPORT_ABNORMAL'));
 
         return view();
-    }
-
-    // 状态切换
-    public function status()
-    {
-        if ($this->request->isPost()) {
-            $post = $this->request->post();
-            $category = ExportModel::get($post['id']);
-            $category['state'] = $category['state'] == ExportModel::STATE_ACTIVE ? 0 : ExportModel::STATE_ACTIVE;
-            $category->save();
-            echo json_encode(['code' => 1, 'msg' => '操作成功']);
-            exit;
-        } else {
-            echo json_encode(['code' => 0, 'msg' => '异常操作']);
-            exit;
-        }
     }
 }

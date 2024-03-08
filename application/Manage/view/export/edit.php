@@ -102,6 +102,14 @@
                 </div>
             </div>
             {/if}
+            {if condition="$info.discard_date"}
+            <div class="layui-form-item">
+                <label class="layui-form-label">废弃时间</label>
+                <div class="layui-input-inline w300">
+                    <div class="layui-content">{$info.discard_date}</div>
+                </div>
+            </div>
+            {/if}
 		</div>
 
         <div class="title"></div>
@@ -110,6 +118,7 @@
                 <label class="layui-form-label">状态</label>
                 <div class="layui-input-block w300">
                     <select name="state" lay-verify="required">
+                        <option value="0" {if condition="$info.state eq 0"}selected{/if}>已废弃</option>
                         <option value="1" {if condition="$info.state eq 1"}selected{/if}>待排柜</option>
                         <option value="2" {if condition="$info.state eq 2"}selected{/if}>待分仓</option>
                         <option value="3" {if condition="$info.state eq 3"}selected{/if}>待出运</option>

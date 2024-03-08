@@ -48,6 +48,8 @@
                                     待上架
                                 {elseif condition="$v.export_state eq 8"/}
                                     已上架
+                                {elseif condition="$v.export_state eq 0"/}
+                                    已废弃
                                 {/if}
                             </td>
                             <td class="tc">
