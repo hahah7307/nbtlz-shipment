@@ -2,13 +2,22 @@
 namespace app\Manage\controller;
 
 use app\Manage\model\AccountModel;
+use app\Manage\model\AdminUserRoleModel;
 use think\Controller;
 use think\Config;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
+use think\exception\DbException;
 use think\Session;
 use think\Request;
 
 class BaseController extends Controller
 {
+    /**
+     * @throws ModelNotFoundException
+     * @throws DbException
+     * @throws DataNotFoundException
+     */
     public function _initialize()
     {
 		parent::_initialize();
@@ -17,8 +26,13 @@ class BaseController extends Controller
 		if (empty(Session::get(Config::get('USER_LOGIN_FLAG')))) {
 			$this->redirect('Login/index');
 		} else {
-			$user = AccountModel::where(['id'=>Session::get(Config::get('USER_LOGIN_FLAG')), 'status' => AccountModel::STATUS_ACTIVE])->find();
+            $account = new AccountModel();
+			$user = $account->where(['id'=>Session::get(Config::get('USER_LOGIN_FLAG')), 'status' => AccountModel::STATUS_ACTIVE])->find();
 			$this->assign('user', $user);
+
+            $userRole = new AdminUserRoleModel();
+            $role = $userRole->where(['user_id' => Session::get(Config::get('USER_LOGIN_FLAG'))])->column('role_id');
+            $this->assign('role', $role);
 		}
 
 		// 加载菜单

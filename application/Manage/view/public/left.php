@@ -13,6 +13,7 @@
                         <cite>控制台</cite>
                     </a>
                 </li>
+                {if condition="$user.id eq 14 or $user.super"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="货号管理" lay-direction="2">
                         <i class="layui-icon iconfont icon-chanpin"></i>
@@ -22,6 +23,8 @@
                         <dd><a layui-href="{:url('Sku/index')}">货号领取</a></dd>
                     </dl>
                 </li>
+                {/if}
+                {if condition="in_array(7, $role) or $user.super"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="采购合同" lay-direction="2">
                         <i class="layui-icon iconfont icon-caigou1"></i>
@@ -31,6 +34,8 @@
                         <dd><a layui-href="{:url('ProcurementContract/index')}">采购合同</a></dd>
                     </dl>
                 </li>
+                {/if}
+                {if condition="in_array(8, $role) or $user.super"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="外销编号" lay-direction="2">
                         <i class="layui-icon iconfont icon-a-36chuyun"></i>
@@ -40,6 +45,7 @@
                         <dd><a layui-href="{:url('Export/index')}">外销编号</a></dd>
                     </dl>
                 </li>
+                {/if}
                 {if condition="$user.super eq 1"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="基础" lay-direction="2">

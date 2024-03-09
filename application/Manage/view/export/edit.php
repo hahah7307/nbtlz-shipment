@@ -165,7 +165,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">船公司</label>
                 <div class="layui-input-inline w300">
-                    <select name="shipping_company" lay-verify="required">
+                    <select name="shipping_company">
                         <option value="">请选择</option>
                         <option value="COSCO" {if condition="$info.shipping_company eq COSCO"}selected{/if}>COSCO</option>
                         <option value="EMC" {if condition="$info.shipping_company eq EMC"}selected{/if}>EMC</option>
@@ -181,7 +181,7 @@
                 </div>
             </div>
             {/if}
-            {if condition="$info.state eq 5"}
+            {if condition="$info.state eq 6"}
             <div class="layui-form-item">
                 <label class="layui-form-label">预计派送</label>
                 <div class="layui-input-inline w300">
@@ -257,7 +257,7 @@ layui.use(['form', 'jquery', 'laydate'], function(){
                 let res = response.data;
                 if (res.code === 1) {
                     layer.alert(res.msg,{icon:1,closeBtn:0,title:false,btnAlign:'c',},function(){
-                        location.href = "{:url('index')}";
+                        location.href = "{:session('manage.back_url')}";
                     });
                 } else {
                     layer.alert(res.msg,{icon:2,closeBtn:0,title:false,btnAlign:'c'},function(){

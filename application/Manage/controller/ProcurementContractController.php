@@ -1,7 +1,7 @@
 <?php
 namespace app\Manage\controller;
 
-use app\Manage\model\AttributeModel;
+use app\Manage\model\AdminUserRoleModel;
 use app\Manage\model\ProcurementContractModel;
 use app\Manage\model\SkuModel;
 use app\Manage\validate\ProcurementContractValidate;
@@ -27,6 +27,12 @@ class ProcurementContractController extends BaseController
             $where['contract_no|product_sku|product_name'] = ['like', '%' . strtoupper($keyword) . '%'];
         } else {
             $where = [];
+        }
+
+        $userRole = new AdminUserRoleModel();
+        $role = $userRole->where(['user_id' => Session::get(Config::get('USER_LOGIN_FLAG'))])->column('role_id');
+        if (in_array(7, $role) && Session::get(Config::get('USER_LOGIN_FLAG')) != 14) {
+            $where['created_id'] = Session::get(Config::get('USER_LOGIN_FLAG'));
         }
 
         $page_num = $this->request->get('page_num', Config::get('PAGE_NUM'));

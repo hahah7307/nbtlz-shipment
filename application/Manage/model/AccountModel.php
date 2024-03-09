@@ -71,6 +71,7 @@ class AccountModel extends Model
         }
     }
 
+    // 获取自己及下属所有id集
     /**
      * @throws DbException
      */
@@ -90,7 +91,6 @@ class AccountModel extends Model
     }
 
     // 获取所有采购人员
-
     /**
      * @throws ModelNotFoundException
      * @throws DbException

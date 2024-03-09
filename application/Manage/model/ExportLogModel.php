@@ -31,13 +31,19 @@ class ExportLogModel extends Model
         return $this->hasOne('AccountModel', 'id', 'created_id');
     }
 
-    static public function createNewLog($post, $export_id): ExportLogModel
+    static public function  createNewLog($post, $export_id): ExportLogModel
     {
-        $abnormal = empty($post['abnormal']) ? '' : Config::get('EXPORT_ABNORMAL')[$post['abnormal']];
+        if (empty($post['abnormal'])) {
+            $abnormal = '';
+            $etd = empty($post['etd']) ? '' : '预计派送' . $post['etd'];
+        } else {
+            $abnormal = Config::get('EXPORT_ABNORMAL')[$post['abnormal']];
+            $etd = '';
+        }
         $logData = [
             'export_id'     =>  $export_id,
             'export_state'  =>  $post['state'],
-            'abnormal'      =>  $abnormal,
+            'abnormal'      =>  $abnormal . $etd,
             'created_id'    =>  Session::get(Config::get('USER_LOGIN_FLAG')),
             'created_ip'    =>  get_real_ip()
         ];

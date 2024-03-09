@@ -40,6 +40,18 @@ class ExportController extends BaseController
         $page_num = $this->request->get('page_num', Config::get('PAGE_NUM'));
         $this->assign('page_num', $page_num);
 
+        $eta = $this->request->get('eta', '', 'htmlspecialchars');
+        $this->assign('eta', $eta);
+        if ($eta) {
+            $where['eta'] = ['elt', $eta];
+        }
+
+        $etd = $this->request->get('etd', '', 'htmlspecialchars');
+        $this->assign('etd', $etd);
+        if ($etd) {
+            $where['etd'] = ['elt', $etd];
+        }
+
         $list = new ExportModel();
         $list = $list->with(['fromPort', 'toPort', 'account'])->where($where)->order('id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
         $this->assign('list', $list);
@@ -110,10 +122,16 @@ class ExportController extends BaseController
                 exit;
             }
 
-            if ($export['state'] == $post['state'] && empty($post['abnormal'])) {
+            if ($export['state'] == $post['state'] && empty($post['abnormal']) && empty($post['etd'])) {
                 echo json_encode(['code' => 0, 'msg' => '请选择新状态或者发生的异常']);
                 exit;
             }
+
+            if ($export['state'] == $post['state'] && $export['etd'] == $post['etd'] && empty($post['abnormal'])) {
+                echo json_encode(['code' => 0, 'msg' => '你没任何操作，无法提交']);
+                exit;
+            }
+
             if ($export['state'] != $post['state'] && !empty($post['abnormal'])) {
                 echo json_encode(['code' => 0, 'msg' => '发生异常时不可更换外销编号状态']);
                 exit;
@@ -143,7 +161,7 @@ class ExportController extends BaseController
                 ];
             } elseif ($post['state'] == 4) {
                 if (empty($post['bol_no']) || empty($post['box_no']) || empty($post['eta']) || empty($post['shipping_company'])) {
-                    echo json_encode(['code' => 0, 'msg' => '请先填写提单号、箱号和预计到港时间']);
+                    echo json_encode(['code' => 0, 'msg' => '请先填写提单号、箱号、船公司和预计到港时间']);
                     exit;
                 }
                 $saveData = [
@@ -158,10 +176,10 @@ class ExportController extends BaseController
                     'arrival_date'      =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
                 ];
             } elseif ($post['state'] == 6) {
-                $saveData = [
-                    'unloading_date'    =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
-                    'etd'               =>  $post['etd'],
-                ];
+                $saveData['unloading_date'] = !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s');
+                if ($post['etd']) {
+                    $saveData['etd'] = $post['etd'];
+                }
             } elseif ($post['state'] == 7) {
                 $saveData = [
                     'dispatch_date'     =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),

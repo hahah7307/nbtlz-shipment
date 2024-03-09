@@ -21,15 +21,21 @@
         </form>
 
 		<div class="layui-form">
+            {if condition="in_array(7, $role) or $user.super"}
 			<a class="layui-btn" href="{:url('add')}">添加</a>
+            {/if}
 			<table class="layui-table" lay-size="sm">
 				<colgroup>
 					<col width="200">
 					<col>
 					<col>
 					<col>
+                    {if condition="in_array(8, $role) or $user.super"}
 					<col width="100">
+                    {/if}
+                    {if condition="$user.super"}
 					<col width="80">
+                    {/if}
 				</colgroup>
 				<thead>
 					<tr>
@@ -37,8 +43,12 @@
 						<th>Sku</th>
 						<th>产品名称</th>
 						<th>产品数量</th>
+                        {if condition="in_array(8, $role) or $user.super"}
 						<th>采购人员</th>
+                        {/if}
+                        {if condition="$user.super"}
 						<th class="tc">操作</th>
+                        {/if}
 					</tr>
 				</thead>
 				<tbody>
@@ -48,10 +58,14 @@
 							<td>{$v.product_sku}</td>
 							<td>{$v.product_name}</td>
 							<td>{$v.product_quantity}</td>
+                            {if condition="in_array(8, $role) or $user.super"}
 							<td>{$v.account.nickname}</td>
+                            {/if}
+                            {if condition="$user.super"}
                             <td class="tc">
                                 <a href="{:url('edit', ['id' => $v.id])}" class="layui-btn layui-btn-normal layui-btn-sm">编辑</a>
                             </td>
+                            {/if}
 						</tr>
 					{/foreach}
 				</tbody>

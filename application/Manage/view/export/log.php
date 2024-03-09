@@ -21,7 +21,7 @@
 					<tr>
 						<th>外销编号</th>
 						<th class="tc">状态</th>
-						<th class="tc">异常</th>
+						<th class="tc">异常与备注</th>
 						<th>操作时间</th>
 						<th>操作人员</th>
 						<th>操作IP</th>
@@ -52,7 +52,7 @@
                                     已废弃
                                 {/if}
                             </td>
-                            <td class="tc">
+                            <td>
                                 {if condition="!empty($v['abnormal'])"}
                                     <p class="red">{$v.abnormal}</p>
                                 {/if}
@@ -74,7 +74,6 @@ layui.use(['form', 'jquery'], function(){
         form = layui.form;
 
 	});
-});
 </script>
 
 {include file="public/footer" /}

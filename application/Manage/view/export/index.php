@@ -26,6 +26,16 @@
             <div class="layui-inline w100">
                 <input type="text" class="layui-input" name="page_num" value="{$page_num}" placeholder="每页条数">
             </div>
+            {if condition="$state eq 4"}
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" name="eta" value="{$eta}" id="eta" placeholder="预计到港时间">
+            </div>
+            {/if}
+            {if condition="$state eq 6"}
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" name="etd" value="{$etd}" id="eta" placeholder="预计派送时间">
+            </div>
+            {/if}
             <div class="layui-inline">
                 <button class="layui-btn" lay-submit lay-filter="Search"><i class="layui-icon">&#xe615;</i> 查询</button>
             </div>
@@ -41,11 +51,31 @@
 					<col width="180">
 					<col>
 					<col>
-					<col>
-					<col>
-					<col>
-					<col>
-					<col>
+                    {if condition="$state egt 4"}
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    {/if}
+                    {if condition="$state eq 4"}
+                    <col>
+                    {/if}
+                    {if condition="$state egt 5"}
+                    <col>
+                    {/if}
+                    {if condition="$state eq 6"}
+                    <col>
+                    <col>
+                    {/if}
+                    {if condition="$state egt 7"}
+                    <col>
+                    {/if}
+                    {if condition="$state egt 8"}
+                    <col>
+                    {/if}
+                    {if condition="$state eq 0"}
+                    <col>
+                    {/if}
 					<col>
 					<col width="100">
 					<col width="150">
@@ -55,11 +85,31 @@
 						<th>外销编号</th>
 						<th>始发港</th>
 						<th>目的港</th>
+                        {if condition="$state egt 4"}
 						<th>提单号</th>
 						<th>箱号</th>
 						<th>船公司</th>
 						<th>开船时间</th>
-						<th>待到港时间</th>
+                        {/if}
+                        {if condition="$state eq 4"}
+						<th>预计到港时间</th>
+                        {/if}
+                        {if condition="$state egt 5"}
+						<th>实际到港时间</th>
+                        {/if}
+                        {if condition="$state eq 6"}
+                        <th>卸船时间</th>
+						<th>预计派送时间</th>
+                        {/if}
+                        {if condition="$state egt 7"}
+						<th>实际派送时间</th>
+                        {/if}
+                        {if condition="$state egt 8"}
+						<th>上架时间</th>
+                        {/if}
+                        {if condition="$state eq 0"}
+                        <th>废弃时间</th>
+                        {/if}
 						<th>创建时间</th>
 						<th>跟单人员</th>
 						<th class="tc">状态</th>
@@ -71,11 +121,37 @@
 							<td>{$v.export_no}</td>
 							<td>{$v.fromPort.name}({$v.fromPort.code})</td>
 							<td>{$v.toPort.name}({$v.toPort.code}）</td>
-							<td>{$v.bol_no}</td>
-							<td>{$v.box_no}</td>
-							<td>{$v.shipping_company}</td>
-							<td>{$v.shipping_date}</td>
-							<td>{$v.eta}</td>
+                            {if condition="$state egt 4"}
+                            <td>{$v.bol_no}</td>
+                            <td>{$v.box_no}</td>
+                            <td>{$v.shipping_company}</td>
+                            <td>{$v.shipping_date}</td>
+                            {/if}
+                            {if condition="$state eq 4"}
+                            <td>{$v.eta}</td>
+                            {/if}
+                            {if condition="$state egt 5"}
+                            <td>{$v.arrival_date}</td>
+                            {/if}
+                            {if condition="$state eq 6"}
+                            <td>{$v.unloading_date}</td>
+                            <td>
+                                <?php if (strtotime($v['etd']) - strtotime($v['unloading_date']) >= 3 * 24 * 60 * 60) { ?>
+                                    <p class="red">{$v.etd}</p>
+                                <?php } else { ?>
+                                    <p>{$v.etd}</p>
+                                <?php } ?>
+                            </td>
+                            {/if}
+                            {if condition="$state egt 7"}
+                            <td>{$v.dispatch_date}</td>
+                            {/if}
+                            {if condition="$state egt 8"}
+                            <th>{$v.grounding_date}</th>
+                            {/if}
+                            {if condition="$state eq 0"}
+                            <th>{$v.discard_date}</th>
+                            {/if}
 							<td>{$v.created_at}</td>
 							<td>{$v.account.nickname}</td>
 							<td class="tc">
@@ -109,9 +185,16 @@
     </div>
 </div>
 <script>
-layui.use(['form', 'jquery'], function(){
+layui.use(['form', 'jquery', 'laydate'], function(){
     let $ = layui.jquery,
-        form = layui.form;
+        form = layui.form,
+        laydate = layui.laydate;
+
+    // 显示日期选择器
+    laydate.render({
+        elem: '#eta',
+        type: 'datetime'
+    });
 
     // 排序
 	form.on('submit(Sort)', function(data){
