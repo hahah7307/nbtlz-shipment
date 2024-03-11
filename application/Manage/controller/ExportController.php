@@ -122,12 +122,12 @@ class ExportController extends BaseController
                 exit;
             }
 
-            if ($export['state'] == $post['state'] && empty($post['abnormal']) && empty($post['etd'])) {
+            if ($export['state'] == $post['state'] && empty($post['abnormal']) && empty($post['eta']) && empty($post['etd'])) {
                 echo json_encode(['code' => 0, 'msg' => '请选择新状态或者发生的异常']);
                 exit;
             }
 
-            if ($export['state'] == $post['state'] && $export['etd'] == $post['etd'] && empty($post['abnormal'])) {
+            if ($export['state'] == $post['state']  && $export['eta'] == $post['eta'] && $export['etd'] == $post['etd'] && empty($post['abnormal'])) {
                 echo json_encode(['code' => 0, 'msg' => '你没任何操作，无法提交']);
                 exit;
             }
@@ -160,25 +160,36 @@ class ExportController extends BaseController
                     'export_no'         =>  explode('-', $export['export_no'])[0] . '-' . $post['warehouse']
                 ];
             } elseif ($post['state'] == 4) {
-                if (empty($post['bol_no']) || empty($post['box_no']) || empty($post['eta']) || empty($post['shipping_company'])) {
-                    echo json_encode(['code' => 0, 'msg' => '请先填写提单号、箱号、船公司和预计到港时间']);
-                    exit;
+                if ($export['state'] == 4) {
+                    if (empty($post['eta'])) {
+                        echo json_encode(['code' => 0, 'msg' => '请先填写预计到港时间']);
+                        exit;
+                    }
+                    $saveData = [
+                        'eta'               =>  $post['eta'],
+                    ];
+                } else {
+                    if (empty($post['bol_no']) || empty($post['box_no']) || empty($post['eta']) || empty($post['shipping_company'])) {
+                        echo json_encode(['code' => 0, 'msg' => '请先填写提单号、箱号、船公司和预计到港时间']);
+                        exit;
+                    }
+                    $saveData = [
+                        'bol_no'            =>  $post['bol_no'],
+                        'box_no'            =>  $post['box_no'],
+                        'shipping_company'  =>  $post['shipping_company'],
+                        'shipping_date'     =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
+                        'eta'               =>  $post['eta'],
+                    ];
                 }
-                $saveData = [
-                    'bol_no'            =>  $post['bol_no'],
-                    'box_no'            =>  $post['box_no'],
-                    'shipping_company'  =>  $post['shipping_company'],
-                    'shipping_date'     =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
-                    'eta'               =>  $post['eta'],
-                ];
             } elseif ($post['state'] == 5) {
                 $saveData = [
                     'arrival_date'      =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
                 ];
             } elseif ($post['state'] == 6) {
-                $saveData['unloading_date'] = !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s');
-                if ($post['etd']) {
+                if ($export['state'] == 6) {
                     $saveData['etd'] = $post['etd'];
+                } else {
+                    $saveData['unloading_date'] = !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s');
                 }
             } elseif ($post['state'] == 7) {
                 $saveData = [

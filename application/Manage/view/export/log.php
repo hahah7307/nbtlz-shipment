@@ -14,6 +14,7 @@
 					<col>
 					<col>
 					<col>
+					<col>
 					<col width="100">
 					<col width="150">
 				</colgroup>
@@ -22,6 +23,7 @@
 						<th>外销编号</th>
 						<th class="tc">状态</th>
 						<th class="tc">异常与备注</th>
+						<th>预计时间</th>
 						<th>操作时间</th>
 						<th>操作人员</th>
 						<th>操作IP</th>
@@ -57,6 +59,7 @@
                                     <p class="red">{$v.abnormal}</p>
                                 {/if}
                             </td>
+							<td>{$v.et_date}</td>
 							<td>{$v.created_at}</td>
 							<td>{$v.account.nickname}</td>
 							<td>{$v.created_ip}</td>

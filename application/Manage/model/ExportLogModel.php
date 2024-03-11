@@ -33,20 +33,20 @@ class ExportLogModel extends Model
 
     static public function  createNewLog($post, $export_id): ExportLogModel
     {
-        if (empty($post['abnormal'])) {
-            $abnormal = '';
-            $etd = empty($post['etd']) ? '' : '预计派送' . $post['etd'];
-        } else {
-            $abnormal = Config::get('EXPORT_ABNORMAL')[$post['abnormal']];
-            $etd = '';
-        }
         $logData = [
             'export_id'     =>  $export_id,
             'export_state'  =>  $post['state'],
-            'abnormal'      =>  $abnormal . $etd,
             'created_id'    =>  Session::get(Config::get('USER_LOGIN_FLAG')),
             'created_ip'    =>  get_real_ip()
         ];
+        if (empty($post['abnormal'])) {
+            $abnormal = '';
+            $et_date = empty($post['etd']) ? $post['eta'] : $post['etd'];
+            $logData['et_date'] = $et_date;
+        } else {
+            $abnormal = Config::get('EXPORT_ABNORMAL')[$post['abnormal']];
+        }
+        $logData['abnormal'] = $abnormal;
         return self::create($logData);
     }
 }

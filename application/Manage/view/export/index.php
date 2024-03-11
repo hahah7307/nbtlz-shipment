@@ -130,7 +130,13 @@
                             <td>{$v.shipping_date}</td>
                             {/if}
                             {if condition="$state eq 4"}
-                            <td>{$v.eta}</td>
+                            <td>
+                                <?php if (attentionEta($v['id'])) { ?>
+                                    <p class="red">{$v.eta}</p>
+                                <?php } else { ?>
+                                    {$v.eta}
+                                <?php } ?>
+                            </td>
                             {/if}
                             {if condition="$state egt 5"}
                             <td>{$v.arrival_date}</td>
@@ -146,10 +152,22 @@
                             </td>
                             {/if}
                             {if condition="$state egt 7"}
-                            <td>{$v.dispatch_date}</td>
+                            <td>
+                                <?php if (strtotime($v['dispatch_date']) - strtotime($v['etd']) >= 2 * 24 * 60 * 60) { ?>
+                                    <p class="red">{$v.dispatch_date}</p>
+                                <?php } else { ?>
+                                    <p>{$v.dispatch_date}</p>
+                                <?php } ?>
+                            </td>
                             {/if}
                             {if condition="$state egt 8"}
-                            <th>{$v.grounding_date}</th>
+                            <th>
+                                <?php if (strtotime($v['grounding_date']) - strtotime($v['dispatch_date']) >= 2 * 24 * 60 * 60) { ?>
+                                    <p class="red">{$v.grounding_date}</p>
+                                <?php } else { ?>
+                                    <p>{$v.grounding_date}</p>
+                                <?php } ?>
+                            </th>
                             {/if}
                             {if condition="$state eq 0"}
                             <th>{$v.discard_date}</th>

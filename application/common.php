@@ -259,3 +259,25 @@ function getContractSkuNumber($contract_id): string
 
     return implode(' , ', $skuList);
 }
+
+// 检测外销编号预计到港时间是否需要高亮(模板方法)
+/**
+ * @throws DbException
+ * @throws \think\Exception
+ */
+function attentionEta($export_id): bool
+{
+    $logObj = new \app\Manage\model\ExportLogModel();
+    $logList = $logObj->where(['export_state' => 4, 'export_id' => $export_id])->order('et_date', 'asc')->select();
+    foreach ($logList as $item) {
+        if (!empty($item['abnormal'])) {
+            return true;
+        }
+    }
+    $timeDiff = strtotime($logList[count($logList) - 1]['et_date']) - strtotime($logList[0]['et_date']);
+    if ($timeDiff >= 60 * 60 * 24 * 5) {
+        return true;
+    } else {
+        return false;
+    }
+}

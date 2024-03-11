@@ -57,7 +57,7 @@
             {if condition="$info.arrival_date or $info.eta"}
             <div class="layui-form-item">
                 {if condition="$info.arrival_date"}
-                <label class="layui-form-label">到港时间</label>
+                <label class="layui-form-label">实际到港</label>
                 <div class="layui-input-inline w300">
                     <div class="layui-content">{$info.arrival_date}</div>
                 </div>
@@ -81,7 +81,7 @@
             {if condition="$info.dispatch_date or $info.etd"}
             <div class="layui-form-item">
                 {if condition="$info.dispatch_date"}
-                <label class="layui-form-label">派送时间</label>
+                <label class="layui-form-label">实际派送</label>
                 <div class="layui-input-inline w300">
                     <div class="layui-content">{$info.dispatch_date}</div>
                 </div>
@@ -174,6 +174,8 @@
                     </select>
                 </div>
             </div>
+            {/if}
+            {if condition="$info.state eq 3 or $info.state eq 4"}
             <div class="layui-form-item">
                 <label class="layui-form-label">预计到港</label>
                 <div class="layui-input-inline w300">
@@ -190,9 +192,27 @@
             </div>
             {/if}
             <div class="layui-form-item">
-                <label class="layui-form-label">操作时间</label>
+                <label class="layui-form-label">
+                    {if condition="$info.state eq 1"}
+                        排柜时间
+                    {elseif condition="$info.state eq 2"/}
+                        分仓时间
+                    {elseif condition="$info.state eq 3"/}
+                        出运时间
+                    {elseif condition="$info.state eq 4"/}
+                        实际到港
+                    {elseif condition="$info.state eq 5"/}
+                        卸船时间
+                    {elseif condition="$info.state eq 6"/}
+                        实际派送
+                    {elseif condition="$info.state eq 7"/}
+                        上架时间
+                    {elseif condition="$info.state eq 8"/}
+                        操作时间
+                    {/if}
+                </label>
                 <div class="layui-input-inline w300">
-                    <input type="text" class="layui-input" id="time" name="time" placeholder="请选择时间">
+                    <input type="text" class="layui-input" id="time" name="time" placeholder="不选择默认为当前时间">
                 </div>
             </div>
             <div class="layui-form-item">
