@@ -46,7 +46,7 @@ class SkuModel extends Model
     {
         $category = CategoryModel::get($category_id);
         $attribute = AttributeModel::get($attribute_id);
-        $num = count(self::all(['sku' => ['like', $category['code'] . '%']]));
+        $num = count(self::all(['sku' => ['like', $category['code'] . '%' . $attribute['code']]]));
         $num2str = sprintf("%03d", $num + 1);
 
         return $category['code'] . $num2str . $attribute['code'];

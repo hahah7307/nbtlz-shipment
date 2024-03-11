@@ -227,3 +227,18 @@ function getWarehouse()
 {
     return \app\Manage\model\WarehouseModel::all(['state' => \app\Manage\model\WarehouseModel::STATE_ACTIVE]);
 }
+
+// 获取外销单号所有采购人员
+/**
+ * @throws DbException
+ */
+function getProcureGroupName($string): string
+{
+    $list = explode(',', $string);
+    $name = [];
+    foreach ($list as $item) {
+        $account = \app\Manage\model\AccountModel::get(['id' => $item]);
+        $name[] = $account['nickname'];
+    }
+    return implode(',', $name);
+}

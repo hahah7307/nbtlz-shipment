@@ -78,6 +78,7 @@
                     {/if}
 					<col>
 					<col width="100">
+					<col width="100">
 					<col width="150">
 				</colgroup>
 				<thead>
@@ -111,6 +112,7 @@
                         <th>废弃时间</th>
                         {/if}
 						<th>创建时间</th>
+						<th>采购人员</th>
 						<th>跟单人员</th>
 						<th class="tc">状态</th>
 					</tr>
@@ -153,6 +155,7 @@
                             <th>{$v.discard_date}</th>
                             {/if}
 							<td>{$v.created_at}</td>
+							<td>{$v.procure_group|getProcureGroupName}</td>
 							<td>{$v.account.nickname}</td>
 							<td class="tc">
                                 {if condition="$v.state eq 1"}
