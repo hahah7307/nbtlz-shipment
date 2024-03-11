@@ -228,7 +228,7 @@ function getWarehouse()
     return \app\Manage\model\WarehouseModel::all(['state' => \app\Manage\model\WarehouseModel::STATE_ACTIVE]);
 }
 
-// 获取外销单号所有采购人员
+// 获取外销单号所有采购人员(模板方法)
 /**
  * @throws DbException
  */
@@ -241,4 +241,21 @@ function getProcureGroupName($string): string
         $name[] = $account['nickname'];
     }
     return implode(',', $name);
+}
+
+// 获取采购合同的sku和数量描述(模板方法)
+/**
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws DbException
+ * @throws \think\db\exception\DataNotFoundException
+ */
+function getContractSkuNumber($contract_id): string
+{
+    $contract = (new app\Manage\model\ProcurementContractModel)->with(['sku.sku'])->where('id', $contract_id)->find();
+    $skuList = [];
+    foreach ($contract['sku'] as $item) {
+        $skuList[] = $item['sku']['sku'] . ' * ' . $item['product_quantity'];
+    }
+
+    return implode(' , ', $skuList);
 }

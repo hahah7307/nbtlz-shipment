@@ -3,10 +3,13 @@ namespace app\Manage\controller;
 
 use app\Manage\model\AdminUserRoleModel;
 use app\Manage\model\ProcurementContractModel;
+use app\Manage\model\ProcurementContractSkuModel;
 use app\Manage\model\SkuModel;
 use app\Manage\validate\ProcurementContractValidate;
+use think\Db;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\ModelNotFoundException;
+use think\Exception;
 use think\exception\DbException;
 use think\Session;
 use think\Config;
@@ -24,7 +27,7 @@ class ProcurementContractController extends BaseController
         $keyword = $this->request->get('keyword', '', 'htmlspecialchars');
         $this->assign('keyword', $keyword);
         if ($keyword) {
-            $where['contract_no|product_sku|product_name'] = ['like', '%' . strtoupper($keyword) . '%'];
+            $where['contract_no|supplier_code'] = ['like', '%' . strtoupper($keyword) . '%'];
         } else {
             $where = [];
         }
@@ -39,7 +42,7 @@ class ProcurementContractController extends BaseController
         $this->assign('page_num', $page_num);
 
         $list = new ProcurementContractModel();
-        $list = $list->with(['sku'])->where($where)->order('id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
+        $list = $list->with(['sku.sku', 'account'])->where($where)->order('id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
         $this->assign('list', $list);
 
         Session::set(Config::get('BACK_URL'), $this->request->url(), 'manage');
@@ -57,25 +60,43 @@ class ProcurementContractController extends BaseController
     {
         if ($this->request->isPost()) {
             $post = $this->request->post();
-            $skuObj = new SkuModel();
-            $sku = $skuObj->find($post['sku_id']);
-            $post['sku_id'] = $sku['id'];
-            $post['product_sku'] = $sku['sku'];
-            $post['created_id'] = Session::get(Config::get('USER_LOGIN_FLAG'));
-            $post['contract_no'] = ProcurementContractModel::createContract();
-            $dataValidate = new ProcurementContractValidate();
-            if ($dataValidate->scene('add')->check($post)) {
-                $model = new ProcurementContractModel();
-                if ($model->allowField(true)->save($post)) {
-                    echo json_encode(['code' => 1, 'msg' => '添加成功']);
-                    exit;
+
+            Db::startTrans();
+            try {
+                $contract['contract_no'] = ProcurementContractModel::createContract();
+                $contract['supplier_code'] = $post['supplier_code'];
+                $contract['created_id'] = Session::get(Config::get('USER_LOGIN_FLAG'));
+                $dataValidate = new ProcurementContractValidate();
+                if ($dataValidate->scene('add')->check($contract)) {
+                    $model = new ProcurementContractModel();
+                    if ($model->allowField(true)->save($contract)) {
+                        $contract_id = $model->getLastInsID();
+                        $skuList = [];
+                        foreach ($post['sku_id'] as $k => $item) {
+                            $skuList[] = [
+                                'contract_id'       =>  $contract_id,
+                                'sku_id'            =>  $item,
+                                'product_quantity'  =>  $post['product_quantity'][$k]
+                            ];
+                        }
+                        $skuObj = new ProcurementContractSkuModel();
+                        if ($skuObj->insertAll($skuList)) {
+                            Db::commit();
+                            echo json_encode(['code' => 1, 'msg' => '添加成功']);
+                            exit();
+                        } else {
+                            throw new Exception('添加失败，请重试');
+                        }
+                    } else {
+                        throw new Exception('添加失败，请重试');
+                    }
                 } else {
-                    echo json_encode(['code' => 0, 'msg' => '添加失败，请重试']);
-                    exit;
+                    throw new Exception($dataValidate->getError());
                 }
-            } else {
-                echo json_encode(['code' => 0, 'msg' => $dataValidate->getError()]);
-                exit;
+            } catch (\Exception $e) {
+                Db::rollback();
+                echo json_encode(['code' => 0, 'msg' => $e->getMessage()]);
+                exit();
             }
         } else {
             $skuObj = new SkuModel();

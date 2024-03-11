@@ -2,8 +2,6 @@
 
 namespace app\Manage\model;
 
-use think\Config;
-use think\Exception;
 use think\exception\DbException;
 use think\Model;
 
@@ -29,9 +27,9 @@ class ProcurementContractModel extends Model
         return date('Y-m-d H:i:s');
     }
 
-    public function sku(): \think\model\relation\HasOne
+    public function sku(): \think\model\relation\HasMany
     {
-        return $this->hasOne('SkuModel', 'id', 'sku_id');
+        return $this->hasMany('ProcurementContractSkuModel', 'contract_id', 'id');
     }
 
     public function account(): \think\model\relation\HasOne

@@ -7,7 +7,7 @@
         <div class="title">采购合同列表</div>
         <form class="layui-form search-form" method="get">
             <div class="layui-inline w200">
-                <input type="text" class="layui-input" name="keyword" value="{$keyword}" placeholder="合同号/SKU/产品名称">
+                <input type="text" class="layui-input" name="keyword" value="{$keyword}" placeholder="合同号/供应商代码">
             </div>
             <div class="layui-inline w100">
                 <input type="text" class="layui-input" name="page_num" value="{$page_num}" placeholder="每页条数">
@@ -26,9 +26,8 @@
             {/if}
 			<table class="layui-table" lay-size="sm">
 				<colgroup>
-					<col width="200">
-					<col>
-					<col>
+					<col width="150">
+					<col width="150">
 					<col>
                     {if condition="in_array(8, $role) or $user.super"}
 					<col width="100">
@@ -40,9 +39,8 @@
 				<thead>
 					<tr>
 						<th>合同编号</th>
-						<th>Sku</th>
-						<th>产品名称</th>
-						<th>产品数量</th>
+						<th>供应商代码</th>
+						<th>SKU与数量</th>
                         {if condition="in_array(8, $role) or $user.super"}
 						<th>采购人员</th>
                         {/if}
@@ -55,9 +53,8 @@
 					{foreach name="list" item="v"}
 						<tr>
 							<td>{$v.contract_no}</td>
-							<td>{$v.product_sku}</td>
-							<td>{$v.product_name}</td>
-							<td>{$v.product_quantity}</td>
+							<td>{$v.supplier_code}</td>
+							<td>{$v.id|getContractSkuNumber}</td>
                             {if condition="in_array(8, $role) or $user.super"}
 							<td>{$v.account.nickname}</td>
                             {/if}
@@ -76,12 +73,12 @@
 </div>
 <script>
 layui.use(['form', 'jquery'], function(){
-	var $ = layui.jquery,
+	let $ = layui.jquery,
 		form = layui.form;
 
 	// 删除
 	form.on('submit(Detele)', function(data){
-		var text = $(this).text(),
+		let text = $(this).text(),
 			button = $(this),
 			id = $(this).data('id');
 		layer.confirm('确定删除吗？',{icon:3,closeBtn:0,title:false,btnAlign:'c'},function(){
@@ -90,7 +87,7 @@ layui.use(['form', 'jquery'], function(){
 			$.ajax({
 				type:'POST',url:"{:url('delete')}",data:{id:id},dataType:'json',
 				success:function(data){
-					if(data.code == 1){
+					if(data.code === 1){
 						layer.alert(data.msg,{icon:1,closeBtn:0,title:false,btnAlign:'c'},function(){
 							location.reload();
 						});
