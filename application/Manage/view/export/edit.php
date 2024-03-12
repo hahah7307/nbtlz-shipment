@@ -267,13 +267,11 @@ layui.use(['form', 'jquery', 'laydate'], function(){
 			button = $(this);
 		$('button').attr('disabled',true);
 		button.text('请稍候...');
-        let procure = [];
-        $('input[type=checkbox]:checked').each(function() {
-            procure.push($(this).val());
-        });
-        data.field.procure = procure;
-        axios.post("{:url('edit', ['id' => $info['id']])}", data.field)
-            .then(function (response) {
+        axios.post("{:url('edit', ['id' => $info['id']])}", data.field, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(function (response) {
                 let res = response.data;
                 if (res.code === 1) {
                     layer.alert(res.msg,{icon:1,closeBtn:0,title:false,btnAlign:'c',},function(){

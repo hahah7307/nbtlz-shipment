@@ -251,10 +251,10 @@ function getProcureGroupName($string): string
  */
 function getContractSkuNumber($contract_id): string
 {
-    $contract = (new app\Manage\model\ProcurementContractModel)->with(['sku.sku'])->where('id', $contract_id)->find();
+    $contract = (new app\Manage\model\ProcurementContractModel)->where('id', $contract_id)->find();
     $skuList = [];
     foreach ($contract['sku'] as $item) {
-        $skuList[] = $item['sku']['sku'] . ' * ' . $item['product_quantity'];
+        $skuList[] = $item['sku'] . ' * ' . $item['product_quantity'];
     }
 
     return implode(' , ', $skuList);

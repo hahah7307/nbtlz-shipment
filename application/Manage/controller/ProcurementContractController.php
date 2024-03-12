@@ -72,15 +72,26 @@ class ProcurementContractController extends BaseController
                     if ($model->allowField(true)->save($contract)) {
                         $contract_id = $model->getLastInsID();
                         $skuList = [];
-                        foreach ($post['sku_id'] as $k => $item) {
-                            $skuList[] = [
-                                'contract_id'       =>  $contract_id,
-                                'sku_id'            =>  $item,
-                                'product_quantity'  =>  $post['product_quantity'][$k]
-                            ];
+                        $skuObj = new SkuModel();
+                        foreach ($post['sku'] as $k => $item) {
+                            $product_sku = $item;
+                            $product_quantity = $post['product_quantity'][$k];
+                            if (empty($product_sku) xor empty(intval($product_quantity))) {
+                                throw new Exception('请先检查没有填写完整的SKU或数量');
+                            }
+                            if (!empty($product_sku)) {
+                                if ($skuObj->where(['sku' => $product_sku, 'state' => SkuModel::STATE_ACTIVE])->count() < 1) {
+                                    throw new Exception('提交了不存在的SKU，请重试');
+                                }
+                                $skuList[] = [
+                                    'contract_id'       =>  $contract_id,
+                                    'sku'               =>  $product_sku,
+                                    'product_quantity'  =>  $product_quantity
+                                ];
+                            }
                         }
-                        $skuObj = new ProcurementContractSkuModel();
-                        if ($skuObj->insertAll($skuList)) {
+                        $contractSkuObj = new ProcurementContractSkuModel();
+                        if ($contractSkuObj->insertAll($skuList)) {
                             Db::commit();
                             echo json_encode(['code' => 1, 'msg' => '添加成功']);
                             exit();

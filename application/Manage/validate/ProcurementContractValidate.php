@@ -18,7 +18,7 @@ class ProcurementContractValidate extends Validate
 
     protected $field = [
         'contract_no'           =>  '合同编号',
-        'supplier_code'         =>  '产品数量',
+        'supplier_code'         =>  '供应商代码',
         'created_id'            =>  '采购人',
     ];
 

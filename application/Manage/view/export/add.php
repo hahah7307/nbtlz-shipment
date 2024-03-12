@@ -12,7 +12,7 @@
 				<div class="layui-input-block w300">
 					<select name="from_port" lay-verify="required">
 						{foreach name="fromPort" item="v"}
-							<option value="{$v.id}">{$v.name}</option>
+							<option value="{$v.id}">{$v.name}({$v.code})</option>
 						{/foreach}
 					</select>
 				</div>
@@ -22,7 +22,7 @@
                 <div class="layui-input-block w300">
                     <select name="to_port" lay-verify="required">
                         {foreach name="toPort" item="va"}
-                        <option value="{$va.id}">{$va.name}</option>
+                        <option value="{$va.id}">{$va.name}({$va.code})</option>
                         {/foreach}
                     </select>
                 </div>
