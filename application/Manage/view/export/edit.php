@@ -198,7 +198,7 @@
                     {elseif condition="$info.state eq 2"/}
                         分仓时间
                     {elseif condition="$info.state eq 3"/}
-                        出运时间
+                        开船时间
                     {elseif condition="$info.state eq 4"/}
                         实际到港
                     {elseif condition="$info.state eq 5"/}

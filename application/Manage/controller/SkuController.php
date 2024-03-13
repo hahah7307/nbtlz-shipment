@@ -58,11 +58,25 @@ class SkuController extends BaseController
         if ($this->request->isPost()) {
             $post = $this->request->post();
             $post['sku'] = SkuModel::createSku($post['category_id'], $post['attribute_id']);
+            $post['sku_origin'] = substr($post['sku'], 0, 8);
             $post['created_id'] = Session::get(Config::get('USER_LOGIN_FLAG'));
-            $dataValidate = new SkuValidate();
-            if ($dataValidate->scene('add')->check($post)) {
+            if ($post['box'] > 1) {
+                $addData = [];
+                for ($i = 0; $i < $post['box']; $i ++) {
+                    $addData[] = [
+                        'category_id'   =>  $post['category_id'],
+                        'attribute_id'  =>  $post['attribute_id'],
+                        'sku'           =>  $post['sku'] . '-' . ($i + 1),
+                        'sku_origin'    =>  $post['sku_origin'],
+                        'name'          =>  $post['name'],
+                        'description'   =>  $post['description'],
+                        'created_id'    =>  $post['created_id'],
+                        'created_at'    =>  date('Y-m-d H:i:s'),
+                        'updated_at'    =>  date('Y-m-d H:i:s')
+                    ];
+                }
                 $model = new SkuModel();
-                if ($model->allowField(true)->save($post)) {
+                if ($model->insertAll($addData)) {
                     echo json_encode(['code' => 1, 'msg' => '添加成功']);
                     exit;
                 } else {
@@ -70,8 +84,20 @@ class SkuController extends BaseController
                     exit;
                 }
             } else {
-                echo json_encode(['code' => 0, 'msg' => $dataValidate->getError()]);
-                exit;
+                $dataValidate = new SkuValidate();
+                if ($dataValidate->scene('add')->check($post)) {
+                    $model = new SkuModel();
+                    if ($model->allowField(true)->save($post)) {
+                        echo json_encode(['code' => 1, 'msg' => '添加成功']);
+                        exit;
+                    } else {
+                        echo json_encode(['code' => 0, 'msg' => '添加失败，请重试']);
+                        exit;
+                    }
+                } else {
+                    echo json_encode(['code' => 0, 'msg' => $dataValidate->getError()]);
+                    exit;
+                }
             }
         } else {
             $category = CategoryModel::category_format(SkuModel::STATE_ACTIVE, [], 1);

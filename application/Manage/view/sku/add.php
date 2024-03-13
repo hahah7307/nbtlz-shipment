@@ -39,6 +39,15 @@
 					<input type="text" class="layui-input" name="description" placeholder="请填写货号描述">
 				</div>
 			</div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">装箱数</label>
+                <div class="layui-input-inline w500">
+                    <input type="radio" name="box" value="1" title="一箱装" checked>
+                    <input type="radio" name="box" value="2" title="两箱装">
+                    <input type="radio" name="box" value="3" title="三箱装">
+                    <input type="radio" name="box" value="4" title="四箱装">
+                </div>
+            </div>
 			<div class="layui-form-item">
 				<div class="layui-input-block">
 					<button class="layui-btn w200" lay-submit lay-filter="formCoding">提交保存</button>
