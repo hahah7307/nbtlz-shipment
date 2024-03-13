@@ -10,10 +10,10 @@
                 <input type="text" class="layui-input" name="keyword" value="{$keyword}" placeholder="sku/名称">
             </div>
             <div class="layui-inline w120">
-                <select name="status" lay-verify="">
+                <select name="state" lay-verify="">
                     <option value="">状态</option>
-                    <option value="0" {if condition="$status eq '0'"}selected{/if}>未启用</option>
-                    <option value="1" {if condition="$status eq 1"}selected{/if}>使用中</option>
+                    <option value="0" {if condition="$state eq '0'"}selected{/if}>未启用</option>
+                    <option value="1" {if condition="$state eq 1"}selected{/if}>使用中</option>
                 </select>
             </div>
             <div class="layui-inline w100">
@@ -63,8 +63,8 @@
 					{/foreach}
 				</tbody>
 			</table>
+            {$list->render()}
 		</div>
-
     </div>
 </div>
 <script>

@@ -61,7 +61,6 @@
             </table>
             {$list->render()}
         </div>
-
     </div>
 </div>
 <script>

@@ -201,6 +201,7 @@
 					{/foreach}
 				</tbody>
 			</table>
+            {$list->render()}
 		</div>
 
     </div>

@@ -46,7 +46,9 @@ class SkuModel extends Model
     {
         $category = CategoryModel::get($category_id);
         $attribute = AttributeModel::get($attribute_id);
-        $num = count(self::all(['sku' => ['like', $category['code'] . '%' . $attribute['code']]]));
+        $skuObj = new SkuModel();
+        $skuList = $skuObj->where(['sku' => ['like', $category['code'] . '%' . $attribute['code']]])->order('sku desc')->select();
+        $num = empty($skuList) ? 0 : intval(substr($skuList[0]['sku'], 3,6));
         $num2str = sprintf("%03d", $num + 1);
 
         return $category['code'] . $num2str . $attribute['code'];

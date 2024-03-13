@@ -29,17 +29,17 @@ class SkuController extends BaseController
             $where = [];
         }
 
-        $status = $this->request->get('status');
-        $this->assign('status', $status);
-        if ($status != "") {
-            $where['status'] = $status;
+        $state = $this->request->get('state');
+        $this->assign('state', $state);
+        if ($state != "") {
+            $where['state'] = $state;
         }
 
         $page_num = $this->request->get('page_num', Config::get('PAGE_NUM'));
         $this->assign('page_num', $page_num);
 
         $list = new SkuModel();
-        $list = $list->with(['category.parent', 'attribute'])->where($where)->order('id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'status' => $status, 'page_num' => $page_num]]);
+        $list = $list->with(['category.parent', 'attribute'])->where($where)->order('sku asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'state' => $state, 'page_num' => $page_num]]);
         $this->assign('list', $list);
 
         Session::set(Config::get('BACK_URL'), $this->request->url(), 'manage');
