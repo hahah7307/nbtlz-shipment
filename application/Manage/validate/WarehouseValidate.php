@@ -7,8 +7,9 @@ use think\Validate;
 class WarehouseValidate extends Validate
 {
     protected $rule = [
+        'port_id'       =>  'require',
         'name'          =>  'require',
-        'short'         =>  'require',
+        'code'          =>  'require',
     ];
 
     protected $message = [
@@ -16,12 +17,13 @@ class WarehouseValidate extends Validate
     ];
 
     protected $field = [
+        'port_id'       =>  '仓库名称',
         'name'          =>  '仓库名称',
-        'short'         =>  '短描述',
+        'code'          =>  '短描述',
     ];
 
     protected $scene = [
-        'add'           =>  ['name', 'short'],
-        'edit'          =>  ['name', 'short'],
+        'add'           =>  ['port_id', 'name', 'code'],
+        'edit'          =>  ['port_id', 'name', 'code'],
     ];
 }

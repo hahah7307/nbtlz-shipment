@@ -145,7 +145,11 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">目的仓</label>
                 <div class="layui-input-inline w300">
-                    <input type="text" class="layui-input" name="warehouse" value="{$info.warehouse}" placeholder="请填写目的仓">
+                    <select name="warehouse" lay-verify="required">
+                        {foreach name="warehouse" item="va"}
+                        <option value="{$va.code}">{$va.code}({$va.name})</option>
+                        {/foreach}
+                    </select>
                 </div>
             </div>
             {/if}

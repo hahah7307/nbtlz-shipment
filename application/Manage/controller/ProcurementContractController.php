@@ -74,8 +74,8 @@ class ProcurementContractController extends BaseController
                         $skuList = [];
                         $skuObj = new SkuModel();
                         foreach ($post['sku'] as $k => $item) {
-                            $product_sku = $item;
-                            $product_quantity = $post['product_quantity'][$k];
+                            $product_sku = strtoupper($item);
+                            $product_quantity = intval($post['product_quantity'][$k]);
                             if (empty($product_sku) xor empty(intval($product_quantity))) {
                                 throw new Exception('请先检查没有填写完整的SKU或数量');
                             }

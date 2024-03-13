@@ -9,8 +9,6 @@ use think\Model;
 class WarehouseModel extends Model
 {
     const STATE_ACTIVE = 1;
-    const LC_WAREHOUSE_ID = 1;
-    const LE_WAREHOUSE_ID = 2;
 
     protected $name = 'warehouse';
 
@@ -28,5 +26,18 @@ class WarehouseModel extends Model
     protected function setUpdatedAtAttr()
     {
         return date('Y-m-d H:i:s');
+    }
+
+    public function port(): \think\model\relation\HasOne
+    {
+        return $this->hasOne('PortModel', 'id', 'port_id');
+    }
+
+    /**
+     * @throws DbException
+     */
+    static public function getWarehouseByPort($port)
+    {
+        return self::all(['state' => self::STATE_ACTIVE, 'port_id' => $port['id']]);
     }
 }

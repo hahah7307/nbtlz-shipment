@@ -19,8 +19,9 @@
 
         <div class="layui-form">
             <a class="layui-btn" href="{:url('add')}">添加</a>
-            <table class="layui-table">
+            <table class="layui-table" lay-size="sm">
                 <colgroup>
+                    <col>
                     <col>
                     <col>
                     <col width="80">
@@ -29,7 +30,8 @@
                 <thead>
                 <tr>
                     <th>名称</th>
-                    <th>短描述</th>
+                    <th>代码</th>
+                    <th>所属目的港</th>
                     <th class="tc">状态</th>
                     <th class="tc">操作</th>
                 </tr>
@@ -38,7 +40,8 @@
                 {foreach name="list" item="v"}
                 <tr>
                     <td>{$v.name}</td>
-                    <td>{$v.short}</td>
+                    <td>{$v.code}</td>
+                    <td>{$v.port.name}</td>
                     <td class="tc">
                         <input type="checkbox" class="h30" name="look" value="{$v.id}" lay-skin="switch" lay-text="是|否" lay-filter="formLock" {if condition="$v.state eq 1"}checked{/if}>
                     </td>

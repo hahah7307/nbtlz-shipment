@@ -6,6 +6,7 @@ use app\Manage\model\ExportLogModel;
 use app\Manage\model\ExportModel;
 use app\Manage\model\PortModel;
 use app\Manage\model\SkuModel;
+use app\Manage\model\WarehouseModel;
 use app\Manage\validate\ExportValidate;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\ModelNotFoundException;
@@ -231,6 +232,9 @@ class ExportController extends BaseController
             $this->assign('abnormal', Config::get('EXPORT_ABNORMAL'));
             $this->assign('procure', AccountModel::get_all_procure());
             $this->assign('procure_group', explode(',', $info['procure_group']));
+
+            $port = PortModel::get(['state' => PortModel::STATE_ACTIVE, 'id' => $info['to_port']]);
+            $this->assign('warehouse', WarehouseModel::getWarehouseByPort($port));
 
             return view();
         }

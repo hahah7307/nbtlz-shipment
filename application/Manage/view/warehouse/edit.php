@@ -7,18 +7,28 @@
 		<a href="{:url('index')}" class="layui-btn layui-btn-danger layui-btn-sm fr"><i class="layui-icon">&#xe603;</i>返回上一页</a>
         <div class="title">仓库编辑</div>
 		<div class="layui-form">
-			<div class="layui-form-item">
-				<label class="layui-form-label">仓库名称</label>
-				<div class="layui-input-inline w300">
-					<input type="text" class="layui-input" name="name" value="{$info.name}" placeholder="请填写仓库名称">
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">短描述</label>
-				<div class="layui-input-inline w300">
-					<input type="text" class="layui-input" name="short" value="{$info.short}" placeholder="请填写短描述">
-				</div>
-			</div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属目的港</label>
+                <div class="layui-input-block w300">
+                    <select name="port_id" lay-verify="required">
+                        {foreach name="port" item="va"}
+                        <option value="{$va.id}" {if condition="$info.port_id eq $va.id"}selected{/if}>{$va.name}({$va.code})</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">目的仓名称</label>
+                <div class="layui-input-inline w300">
+                    <input type="text" class="layui-input" name="name" placeholder="请填写仓库名称" value="{$info.name}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">目的仓代码</label>
+                <div class="layui-input-inline w300">
+                    <input type="text" class="layui-input" name="code" placeholder="请填写短描述" value="{$info.code}">
+                </div>
+            </div>
 			<div class="layui-form-item">
 				<div class="layui-input-block">
 					<button class="layui-btn w200" lay-submit lay-filter="formCoding">提交保存</button>

@@ -31,4 +31,12 @@ class PortModel extends Model
     {
         return date('Y-m-d H:i:s');
     }
+
+    /**
+     * @throws DbException
+     */
+    static public function getToPort()
+    {
+        return self::all(['state' => self::STATE_ACTIVE, 'type' => self::TYPE_TO]);
+    }
 }

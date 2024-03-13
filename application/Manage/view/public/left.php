@@ -56,6 +56,7 @@
                         <dd><a layui-href="{:url('Category/index')}">品类管理</a></dd>
                         <dd><a layui-href="{:url('Attribute/index')}">属性管理</a></dd>
                         <dd><a layui-href="{:url('Port/index')}">港口管理</a></dd>
+                        <dd><a layui-href="{:url('Warehouse/index')}">仓库管理</a></dd>
                     </dl>
                 </li>
                 <li data-name="Site" class="layui-nav-item">

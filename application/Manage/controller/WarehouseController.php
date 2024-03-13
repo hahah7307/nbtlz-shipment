@@ -1,6 +1,7 @@
 <?php
 namespace app\Manage\controller;
 
+use app\Manage\model\PortModel;
 use app\Manage\model\WarehouseModel;
 use app\Manage\validate\WarehouseValidate;
 use think\exception\DbException;
@@ -23,7 +24,7 @@ class WarehouseController extends BaseController
 
         // 仓库列表
         $storage = new WarehouseModel();
-        $list = $storage->where($where)->order('id asc')->paginate(Config::get('PAGE_NUM'));
+        $list = $storage->with(['port'])->where($where)->order('id asc')->paginate(Config::get('PAGE_NUM'));
         $this->assign('list', $list);
 
         Session::set(Config::get('BACK_URL'), $this->request->url(), 'manage');
@@ -31,6 +32,10 @@ class WarehouseController extends BaseController
     }
 
     // 添加
+
+    /**
+     * @throws DbException
+     */
     public function add()
     {
         if ($this->request->isPost()) {
@@ -49,7 +54,7 @@ class WarehouseController extends BaseController
             }
             exit;
         } else {
-
+            $this->assign('port', PortModel::getToPort());
             return view();
         }
     }
@@ -79,6 +84,7 @@ class WarehouseController extends BaseController
             $info = WarehouseModel::get(['id' => $id,]);
             $this->assign('info', $info);
 
+            $this->assign('port', PortModel::getToPort());
             return view();
         }
     }
