@@ -54,7 +54,7 @@ class ExportController extends BaseController
         }
 
         $list = new ExportModel();
-        $list = $list->with(['fromPort', 'toPort', 'account'])->where($where)->order('id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
+        $list = $list->with(['fromPort', 'toPort', 'account'])->where($where)->order('id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num, 'state' => $state]]);
         $this->assign('list', $list);
 
         Session::set(Config::get('BACK_URL'), $this->request->url(), 'manage');

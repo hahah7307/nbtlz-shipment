@@ -45,7 +45,9 @@ class ProcurementContractModel extends Model
         $y = date('y');
         $m = date('m');
         $prefix = $y . 'TI' . $m;
-        $num = count(self::all(['contract_no' => ['like', $prefix . '%']]));
+        $contractObj = new ProcurementContractModel();
+        $contractList = $contractObj->where(['contract_no' => ['like', $prefix . '%']])->order('contract_no desc')->select();
+        $num = empty($contractList) ? 0 : intval(substr($contractList[0]['contract_no'], 6,9));
         $num2str = sprintf("%03d", $num + 1);
 
         return $prefix . $num2str;

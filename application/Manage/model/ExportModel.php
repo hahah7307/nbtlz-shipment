@@ -53,7 +53,9 @@ class ExportModel extends Model
         $y = date('y');
         $m = date('m');
         $prefix = 'A' . $y . 'TI' . $m;
-        $num = count(self::all(['export_no' => ['like', $prefix . '%']]));
+        $exportObj = new ExportModel();
+        $exportList = $exportObj->where(['export_no' => ['like', $prefix . '%']])->order('export_no desc')->select();
+        $num = empty($exportList) ? 0 : intval(substr($exportList[0]['export_no'], 7,10));
         $num2str = sprintf("%03d", $num + 1);
 
         return $prefix . $num2str;
