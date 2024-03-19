@@ -27,6 +27,13 @@
                     </select>
                 </div>
             </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">开船时间</label>
+                <div class="layui-input-inline w500">
+                    <input type="radio" name="shipment_month" title="本月" value="1" lay-skin="primary" checked>
+                    <input type="radio" name="shipment_month" title="下月" value="0" lay-skin="primary">
+                </div>
+            </div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">备注</label>
 				<div class="layui-input-inline w300">

@@ -48,10 +48,16 @@ class ExportModel extends Model
     /**
      * @throws DbException
      */
-    static public function createNewExport(): string
+    static public function createNewExport($shipment_month): string
     {
-        $y = date('y');
-        $m = date('m');
+        if ($shipment_month) {
+            $y = date('y');
+            $m = date('m');
+        } else {
+            $ym = date('Ym',strtotime('+1 month'));
+            $y = substr($ym, 2, 2);
+            $m = substr($ym, 4, 6);
+        }
         $prefix = 'A' . $y . 'TI' . $m;
         $exportObj = new ExportModel();
         $exportList = $exportObj->where(['export_no' => ['like', $prefix . '%']])->order('export_no desc')->select();

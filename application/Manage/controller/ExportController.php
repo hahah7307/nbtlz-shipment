@@ -77,7 +77,7 @@ class ExportController extends BaseController
             $post['sku_id'] = $sku['id'];
             $post['product_sku'] = $sku['sku'];
             $post['created_id'] = Session::get(Config::get('USER_LOGIN_FLAG'));
-            $post['export_no'] = ExportModel::createNewExport();
+            $post['export_no'] = ExportModel::createNewExport($post['shipment_month']);
             $post['state'] = ExportModel::STATE_ACTIVE;
             $dataValidate = new ExportValidate();
             if ($dataValidate->scene('add')->check($post)) {
