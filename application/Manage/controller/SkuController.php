@@ -138,6 +138,12 @@ class SkuController extends BaseController
         if ($this->request->isPost()) {
             $post = $this->request->post();
             $post['sku'] = SkuModel::manualSku($post['category_id'], $post['attribute_id'], $post['index']);
+            $model = new SkuModel();
+            $sku = $model->where(['sku_origin|sku' => $post['sku']])->find();
+            if (!empty($sku)) {
+                echo json_encode(['code' => 0, 'msg' => '该货号已存在！']);
+                exit;
+            }
             $post['sku_origin'] = substr($post['sku'], 0, 8);
             $post['created_id'] = Session::get(Config::get('USER_LOGIN_FLAG'));
             if ($post['box'] > 1) {
@@ -155,7 +161,6 @@ class SkuController extends BaseController
                         'updated_at'    =>  date('Y-m-d H:i:s')
                     ];
                 }
-                $model = new SkuModel();
                 if ($model->insertAll($addData)) {
                     echo json_encode(['code' => 1, 'msg' => '添加成功']);
                     exit;
@@ -166,7 +171,6 @@ class SkuController extends BaseController
             } else {
                 $dataValidate = new SkuValidate();
                 if ($dataValidate->scene('add')->check($post)) {
-                    $model = new SkuModel();
                     if ($model->allowField(true)->save($post)) {
                         echo json_encode(['code' => 1, 'msg' => '添加成功']);
                         exit;
