@@ -46,13 +46,14 @@
                     </dl>
                 </li>
                 {/if}
-                {if condition="$user.super eq 1"}
+                {if condition="$user.super eq 1 or $user.id eq 14"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="基础" lay-direction="2">
                         <i class="layui-icon iconfont icon-jichugongneng"></i>
                         <cite>基础</cite>
                     </a>
                     <dl class="layui-nav-child">
+                        <dd><a layui-href="{:url('Sku/create')}">手动货号</a></dd>
                         <dd><a layui-href="{:url('Category/index')}">品类管理</a></dd>
                         <dd><a layui-href="{:url('Attribute/index')}">属性管理</a></dd>
                         <dd><a layui-href="{:url('Port/index')}">港口管理</a></dd>

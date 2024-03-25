@@ -53,4 +53,15 @@ class SkuModel extends Model
 
         return $category['code'] . $num2str . $attribute['code'];
     }
+
+    /**
+     * @throws DbException
+     */
+    static public function manualSku($category_id, $attribute_id, $index): string
+    {
+        $category = CategoryModel::get($category_id);
+        $attribute = AttributeModel::get($attribute_id);
+
+        return $category['code'] . $index . $attribute['code'];
+    }
 }
