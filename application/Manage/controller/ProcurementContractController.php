@@ -1,6 +1,7 @@
 <?php
 namespace app\Manage\controller;
 
+use app\Manage\model\AccountModel;
 use app\Manage\model\AdminUserRoleModel;
 use app\Manage\model\ProcurementContractModel;
 use app\Manage\model\ProcurementContractSkuModel;
@@ -34,7 +35,9 @@ class ProcurementContractController extends BaseController
 
         $userRole = new AdminUserRoleModel();
         $role = $userRole->where(['user_id' => Session::get(Config::get('USER_LOGIN_FLAG'))])->column('role_id');
-        if (in_array(7, $role) && Session::get(Config::get('USER_LOGIN_FLAG')) != 14) {
+        $account = new AccountModel();
+        $user = $account->where(['id'=>Session::get(Config::get('USER_LOGIN_FLAG')), 'status' => AccountModel::STATUS_ACTIVE])->find();
+        if (in_array(7, $role) && Session::get(Config::get('USER_LOGIN_FLAG')) != 14 && $user['super'] != 1) {
             $where['created_id'] = Session::get(Config::get('USER_LOGIN_FLAG'));
         }
 
@@ -110,9 +113,6 @@ class ProcurementContractController extends BaseController
                 exit();
             }
         } else {
-            $skuObj = new SkuModel();
-            $sku = $skuObj->where(['state' => SkuModel::STATE_ACTIVE])->order('sku asc')->select();
-            $this->assign('sku', $sku);
 
             return view();
         }
@@ -124,35 +124,59 @@ class ProcurementContractController extends BaseController
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
+     * @throws Exception
      */
     public function edit($id)
     {
         if ($this->request->isPost()) {
             $post = $this->request->post();
-            $skuObj = new SkuModel();
-            $sku = $skuObj->find($post['sku_id']);
-            $post['sku_id'] = $sku['id'];
-            $post['product_sku'] = $sku['sku'];
-            $dataValidate = new ProcurementContractValidate();
-            if ($dataValidate->scene('edit')->check($post)) {
-                $model = new ProcurementContractModel();
-                if ($model->allowField(true)->save($post, ['id' => $id])) {
-                    echo json_encode(['code' => 1, 'msg' => '修改成功']);
-                    exit;
+
+            Db::startTrans();
+            try {
+                $dataValidate = new ProcurementContractValidate();
+                if ($dataValidate->scene('edit')->check($post)) {
+                    $model = new ProcurementContractModel();
+                    $info = $model->with('sku')->find($id);
+
+                    $skuList = [];
+                    $skuObj = new SkuModel();
+                    foreach ($post['sku'] as $k => $item) {
+                        $product_sku = strtoupper($item);
+                        $product_quantity = intval($post['product_quantity'][$k]);
+                        if (empty($product_sku) xor empty(intval($product_quantity))) {
+                            throw new Exception('请先检查没有填写完整的SKU或数量');
+                        }
+                        if (!empty($product_sku)) {
+                            if ($skuObj->where(['sku' => $product_sku, 'state' => SkuModel::STATE_ACTIVE])->count() < 1) {
+                                throw new Exception('提交了不存在的SKU，请重试');
+                            }
+                            $skuList[] = [
+                                'contract_id'       =>  $info['id'],
+                                'sku'               =>  $product_sku,
+                                'product_quantity'  =>  $product_quantity
+                            ];
+                        }
+                    }
+                    $contractSkuObj = new ProcurementContractSkuModel();
+                    $contractSkuObj->where(['contract_id' => $info['id']])->delete();
+                    if ($contractSkuObj->insertAll($skuList)) {
+
+                        Db::commit();
+                        echo json_encode(['code' => 1, 'msg' => '修改成功']);
+                        exit();
+                    } else {
+                        throw new Exception('修改失败，请重试');
+                    }
                 } else {
-                    echo json_encode(['code' => 0, 'msg' => '修改失败，请重试']);
-                    exit;
+                    throw new Exception($dataValidate->getError());
                 }
-            } else {
-                echo json_encode(['code' => 0, 'msg' => $dataValidate->getError()]);
-                exit;
+            } catch (\Exception $e) {
+                Db::rollback();
+                echo json_encode(['code' => 0, 'msg' => $e->getMessage()]);
+                exit();
             }
         } else {
-            $skuObj = new SkuModel();
-            $sku = $skuObj->where(['state' => SkuModel::STATE_ACTIVE])->order('sku asc')->select();
-            $this->assign('sku', $sku);
-
-            $info = ProcurementContractModel::get(['id' => $id,]);
+            $info = ProcurementContractModel::with(['sku'])->find($id);
             $this->assign('info', $info);
 
             return view();

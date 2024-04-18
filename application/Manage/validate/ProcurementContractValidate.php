@@ -24,6 +24,6 @@ class ProcurementContractValidate extends Validate
 
     protected $scene = [
         'add'           =>  ['contract_no', 'supplier_code', 'created_id'],
-        'edit'          =>  ['contract_no', 'supplier_code'],
+        'edit'          =>  ['sku', 'product_quantity'],
     ];
 }

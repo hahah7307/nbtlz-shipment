@@ -78,22 +78,6 @@ layui.use(['form', 'jquery'], function(){
         }).catch(function (error) {
             console.log(error);
         });
-        // $.ajax({
-        //     type:'POST',url:"{:url('add', ['id' => $id])}",data:data.field,dataType:'json',
-        //     success:function(data){
-        //         if(data.code === 1){
-        //             layer.alert(data.msg,{icon:1,closeBtn:0,title:false,btnAlign:'c'},function(){
-        //                 location.href = "{:url('index')}";
-        //             });
-        //         }else{
-        //             layer.alert(data.msg,{icon:2,closeBtn:0,title:false,btnAlign:'c'},function(){
-        //                 layer.closeAll();
-        //                 $('button').attr('disabled',false);
-        //                 button.text(text);
-        //             });
-        //         }
-        //     }
-        // });
         return false;
 	});
 });
