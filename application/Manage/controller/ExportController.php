@@ -155,11 +155,18 @@ class ExportController extends BaseController
                     echo json_encode(['code' => 0, 'msg' => '请先填写目的仓']);
                     exit;
                 }
-                $saveData = [
-                    'compartment_date'  =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
-                    'warehouse'         =>  $post['warehouse'],
-                    'export_no'         =>  explode('-', $export['export_no'])[0] . '-' . $post['warehouse']
-                ];
+                if ($export['to_port'] == 12) {
+                    $saveData = [
+                        'compartment_date'  =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
+                        'warehouse'         =>  $post['warehouse'],
+                    ];
+                } else {
+                    $saveData = [
+                        'compartment_date'  =>  !empty($post['time']) ? $post['time'] : date('Y-m-d H:i:s'),
+                        'warehouse'         =>  $post['warehouse'],
+                        'export_no'         =>  explode('-', $export['export_no'])[0] . '-' . $post['warehouse']
+                    ];
+                }
             } elseif ($post['state'] == 4) {
                 if ($export['state'] == 4) {
                     if (empty($post['eta'])) {

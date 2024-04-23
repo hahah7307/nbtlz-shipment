@@ -30,6 +30,12 @@
                     <div class="layui-content">{$info.toPort.name}({$info.toPort.code})</div>
                 </div>
             </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">目的仓</label>
+                <div class="layui-input-inline w300">
+                    <div class="layui-content">{$info.warehouse}</div>
+                </div>
+            </div>
             {if condition="$info.container_date"}
             <div class="layui-form-item">
                 <label class="layui-form-label">排柜时间</label>
