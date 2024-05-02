@@ -1,6 +1,9 @@
 
 {include file="public/header" /}
 
+<style>
+    .sku-old {display: none}
+</style>
 <!-- 主体内容 -->
 <div class="layui-body" id="LAY_app_body">
     <div class="right">
@@ -25,6 +28,19 @@
                         <option value="{$va.id}" {if condition="$va.level lt 2"}disabled{/if}>{$va.attribute_name}</option>
                         {/foreach}
                     </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">新货品</label>
+                <div class="layui-input-inline w500">
+                    <input type="radio" name="is_new" value="1" title="是" lay-filter="filter" checked>
+                    <input type="radio" name="is_new" value="0" title="否" lay-filter="filter">
+                </div>
+            </div>
+            <div class="layui-form-item sku-old">
+                <label class="layui-form-label">货号序号</label>
+                <div class="layui-input-inline w300">
+                    <input type="text" class="layui-input" name="code" placeholder="请填写货号序号">
                 </div>
             </div>
 			<div class="layui-form-item">
@@ -60,6 +76,14 @@
 layui.use(['form', 'jquery'], function(){
 	var $ = layui.jquery,
 		form = layui.form;
+
+    form.on('radio(filter)', function(data){
+        if (data.value === "1") {
+            $(".sku-old").hide();
+        } else {
+            $(".sku-old").show();
+        }
+    });
 
 	// 提交
 	form.on('submit(formCoding)', function(data){

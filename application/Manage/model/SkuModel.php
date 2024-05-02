@@ -42,14 +42,18 @@ class SkuModel extends Model
     /**
      * @throws DbException
      */
-    static public function createSku($category_id, $attribute_id): string
+    static public function createSku($category_id, $attribute_id, $is_new = 1, $code = ''): string
     {
         $category = CategoryModel::get($category_id);
         $attribute = AttributeModel::get($attribute_id);
         $skuObj = new SkuModel();
-        $skuList = $skuObj->where(['sku_origin' => ['like', $category['code'] . '%' . $attribute['code']]])->order('sku desc')->select();
-        $num = empty($skuList) ? 0 : intval(substr($skuList[0]['sku'], 3,6));
-        $num2str = sprintf("%03d", $num + 1);
+        if ($is_new) {
+            $skuList = $skuObj->where(['sku_origin' => ['like', $category['code'] . '%']])->order('sku desc')->select();
+            $num = empty($skuList) ? 0 : intval(substr($skuList[0]['sku'], 3,6));
+            $num2str = sprintf("%03d", $num + 1);
+        } else {
+            $num2str = sprintf("%03d", intval($code));
+        }
 
         return $category['code'] . $num2str . $attribute['code'];
     }
@@ -62,6 +66,6 @@ class SkuModel extends Model
         $category = CategoryModel::get($category_id);
         $attribute = AttributeModel::get($attribute_id);
 
-        return $category['code'] . $index . $attribute['code'];
+        return $category['code'] . sprintf("%03d", intval($index)) . $attribute['code'];
     }
 }

@@ -57,7 +57,7 @@ class SkuController extends BaseController
     {
         if ($this->request->isPost()) {
             $post = $this->request->post();
-            $post['sku'] = SkuModel::createSku($post['category_id'], $post['attribute_id']);
+            $post['sku'] = SkuModel::createSku($post['category_id'], $post['attribute_id'], $post['is_new'], $post['code']);
             $post['sku_origin'] = substr($post['sku'], 0, 8);
             $post['created_id'] = Session::get(Config::get('USER_LOGIN_FLAG'));
             if ($post['box'] > 1) {
