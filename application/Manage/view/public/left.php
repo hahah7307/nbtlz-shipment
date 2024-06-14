@@ -35,7 +35,7 @@
                     </dl>
                 </li>
                 {/if}
-                {if condition="in_array(8, $role) or $user.super"}
+                {if condition="in_array(8, $role) or in_array(9, $role) or $user.super"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="外销编号" lay-direction="2">
                         <i class="layui-icon iconfont icon-a-36chuyun"></i>
@@ -46,7 +46,7 @@
                     </dl>
                 </li>
                 {/if}
-                {if condition="$user.super eq 1 or $user.id eq 14"}
+                {if condition="$user.super eq 1 or $user.id eq 14 or in_array(8, $role)"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="基础" lay-direction="2">
                         <i class="layui-icon iconfont icon-jichugongneng"></i>
