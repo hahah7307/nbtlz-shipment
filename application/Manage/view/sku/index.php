@@ -37,6 +37,7 @@
 					<col>
 					<col>
 					<col width="80">
+					<col width="80">
 				</colgroup>
 				<thead>
 					<tr>
@@ -46,6 +47,7 @@
 						<th>所属类目</th>
 						<th>所属属性</th>
 						<th class="tc">是否启用</th>
+						<th class="tc">操作</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -59,6 +61,9 @@
 							<td class="tc">
 								<input type="checkbox" class="h30" name="look" value="{$v.id}" lay-skin="switch" lay-text="是|否" lay-filter="formLock" {if condition="$v.state eq 1"}checked{/if}>
 							</td>
+                            <td class="tc">
+                                <a href="{:url('instructions', ['id' => $v.id])}" class="layui-btn layui-btn-sm">说明书</a>
+                            </td>
 						</tr>
 					{/foreach}
 				</tbody>

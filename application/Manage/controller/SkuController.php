@@ -1,9 +1,13 @@
 <?php
 namespace app\Manage\controller;
 
+use app\Manage\model\AlibabaCloudCredentialsWrapper;
 use app\Manage\model\AttributeModel;
 use app\Manage\model\CategoryModel;
+use app\Manage\model\FilesModel;
+use app\Manage\model\SkuInstructionsModel;
 use app\Manage\model\SkuModel;
+use app\Manage\validate\FilesValidate;
 use app\Manage\validate\SkuValidate;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\ModelNotFoundException;
@@ -192,5 +196,70 @@ class SkuController extends BaseController
 
             return view();
         }
+    }
+
+    // 说明书
+    /**
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws DataNotFoundException
+     */
+    public function instructions($id): \think\response\View
+    {
+        $list = new SkuInstructionsModel();
+        $list = $list->where(['sku_id' => $id])->select();
+        $this->assign('list', $list);
+        $this->assign('id', $id);
+
+        return view();
+    }
+
+    /**
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws DataNotFoundException
+     */
+    public function createTmpUrl($id)
+    {
+
+        if ($this->request->isPost()) {
+            $instructionsObj = new SkuInstructionsModel();
+            $instructions = $instructionsObj->find($id);
+            $signUrl = AlibabaCloudCredentialsWrapper::signUrl($instructions['file_path']);
+
+            $newData = [
+                'file_tmp_url'      =>  $signUrl['url'],
+                'file_tmp_expire'   =>  $signUrl['expire'],
+            ];
+            $model = new SkuInstructionsModel();
+            if ($model->allowField(true)->save($newData, ['id' => $id])) {
+                echo json_encode(['code' => 1, 'msg' => '生成成功']);
+            } else {
+                echo json_encode(['code' => 0, 'msg' => '生成失败，请重试']);
+            }
+        } else {
+            echo json_encode(['code' => 0, 'msg' => '操作异常！']);
+            exit;
+        }
+    }
+
+    // 删除
+    /**
+     * @throws DbException
+     */
+    public function delete()
+    {
+        if ($this->request->isPost()) {
+            $post = $this->request->post();
+            $block = SkuInstructionsModel::get($post['id']);
+            if ($block->delete()) {
+                echo json_encode(['code' => 1, 'msg' => '操作成功']);
+            } else {
+                echo json_encode(['code' => 0, 'msg' => '操作失败，请重试']);
+            }
+        } else {
+            echo json_encode(['code' => 0, 'msg' => '异常操作']);
+        }
+        exit;
     }
 }
