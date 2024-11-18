@@ -46,6 +46,17 @@
                     </dl>
                 </li>
                 {/if}
+                {if condition="$user.id eq 14 or $user.super"}
+                <li data-name="Finance" class="layui-nav-item">
+                    <a layui-href="javascript:;" lay-tips="工厂" lay-direction="2">
+                        <i class="layui-icon iconfont icon-caiwu1"></i>
+                        <cite>工厂</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a layui-href="{:url('FinanceOperation/factory_claim')}">工厂索赔</a></dd>
+                    </dl>
+                </li>
+                {/if}
                 {if condition="$user.super eq 1 or $user.id eq 14 or in_array(8, $role)"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="基础" lay-direction="2">
