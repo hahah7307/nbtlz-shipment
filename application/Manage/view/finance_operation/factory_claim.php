@@ -25,6 +25,7 @@
         </form>
 
         <div class="layui-form">
+            <a class="layui-btn" href="{:url('add')}">添加</a>
             <button type="button" class="layui-btn  layui-btn-normal" id="excel">导入</button>
             <a href="{:url('factory_claim_export')}" class="layui-btn layui-btn-normal">导出</a>
             <span class="total">工厂索赔合计：{$list_sum|number_format=###, 2}</span>
@@ -36,7 +37,7 @@
                     <col>
                     <col>
                     <col>
-                    <col width="80">
+                    <col width="120">
                 </colgroup>
                 <thead>
                 <tr>
@@ -59,6 +60,7 @@
                     <td>{$v.content}</td>
                     <td>{$v.type}</td>
                     <td class="tc">
+                        <a href="{:url('edit', ['id' => $v.id])}" class="layui-btn layui-btn-normal layui-btn-sm">编辑</a>
                         <button data-id="{$v.id}" class="layui-btn layui-btn-sm layui-btn-danger ml0" lay-submit lay-filter="Detele">删除</button>
                     </td>
                 </tr>

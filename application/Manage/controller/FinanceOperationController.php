@@ -3,6 +3,7 @@ namespace app\Manage\controller;
 
 use app\Manage\model\FinanceExcelInit;
 use app\Manage\model\FinanceOperationFactoryClaimModel;
+use app\Manage\validate\FinanceOperationValidate;
 use Exception;
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -29,7 +30,7 @@ class FinanceOperationController extends BaseController
             $where = [];
         }
 
-        $month = $this->request->get('month', date('Y-m', strtotime('-1 month')));
+        $month = $this->request->get('month', date('Y-m'));
         $calculate_month = date('Ym', strtotime($month . '-01'));
         $where['month'] = $calculate_month;
         $this->assign('month', $month);
@@ -135,5 +136,61 @@ class FinanceOperationController extends BaseController
             echo json_encode(['code' => 0, 'msg' => '异常操作']);
         }
         exit;
+    }
+
+    // 添加
+    public function add()
+    {
+        if ($this->request->isPost()) {
+            $post = $this->request->post();
+            $post['month'] = date('Ym', strtotime($post['month'] . '-01'));
+            $dataValidate = new FinanceOperationValidate();
+            if ($dataValidate->scene('add')->check($post)) {
+                $model = new FinanceOperationFactoryClaimModel();
+                if ($model->allowField(true)->save($post)) {
+                    echo json_encode(['code' => 1, 'msg' => '添加成功']);
+                } else {
+                    echo json_encode(['code' => 0, 'msg' => '添加失败，请重试']);
+                }
+            } else {
+                echo json_encode(['code' => 0, 'msg' => $dataValidate->getError()]);
+            }
+            exit;
+        } else {
+            $month = $this->request->get('month', date('Y-m'));
+            $this->assign('month', $month);
+
+            return view();
+        }
+    }
+
+    // 编辑
+
+    /**
+     * @throws DbException
+     */
+    public function edit($id)
+    {
+        if ($this->request->isPost()) {
+            $post = $this->request->post();
+            $post['month'] = date('Ym', strtotime($post['month'] . '-01'));
+            $dataValidate = new FinanceOperationValidate();
+            if ($dataValidate->scene('edit')->check($post)) {
+                $model = new FinanceOperationFactoryClaimModel();
+                if ($model->allowField(true)->save($post, ['id' => $id])) {
+                    echo json_encode(['code' => 1, 'msg' => '修改成功']);
+                } else {
+                    echo json_encode(['code' => 0, 'msg' => '修改失败，请重试']);
+                }
+            } else {
+                echo json_encode(['code' => 0, 'msg' => $dataValidate->getError()]);
+            }
+            exit;
+        } else {
+            $info = FinanceOperationFactoryClaimModel::get(['id' => $id,]);
+            $this->assign('info', $info);
+
+            return view();
+        }
     }
 }
