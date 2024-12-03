@@ -38,6 +38,11 @@ class AttributeController extends BaseController
         if ($this->request->isPost()) {
             $post = $this->request->post();
             $parent = AttributeModel::get(['id' => $id]);
+            $code = AttributeModel::all(['code' => $post['code']]);
+            if (count($code) >= 1) {
+                echo json_encode(['code' => 0, 'msg' => '参考码已存在，请尝试使用新的参考码']);
+                exit;
+            }
             $post['level'] = ++ $parent['level'];
             $dataValidate = new AttributeValidate();
             if ($dataValidate->scene('add')->check($post)) {
@@ -63,7 +68,6 @@ class AttributeController extends BaseController
     }
 
     // 编辑
-
     /**
      * @throws DataNotFoundException
      * @throws DbException
@@ -73,8 +77,14 @@ class AttributeController extends BaseController
     {
         if ($this->request->isPost()) {
             $post = $this->request->post();
+            $model = new AttributeModel();
             if ($post['parent_id'] == $id) {
                 echo json_encode(['code' => 0, 'msg' => '无法选择自己作为父级品类']);
+                exit;
+            }
+            $code = $model->where(['code' => $post['code'], 'id' => ['neq', $id]])->select();
+            if (count($code) >= 1) {
+                echo json_encode(['code' => 0, 'msg' => '参考码已存在，请尝试使用新的参考码']);
                 exit;
             }
             $parent = AttributeModel::get(['id' => $post['parent_id']]);
@@ -86,7 +96,6 @@ class AttributeController extends BaseController
             }
             $dataValidate = new AttributeValidate();
             if ($dataValidate->scene('edit')->check($post)) {
-                $model = new AttributeModel();
                 if ($model->allowField(true)->save($post, ['id' => $id])) {
                     echo json_encode(['code' => 1, 'msg' => '修改成功']);
                     exit;
