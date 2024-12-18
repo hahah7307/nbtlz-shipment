@@ -28,7 +28,7 @@ class ProcurementContractController extends BaseController
         $keyword = $this->request->get('keyword', '', 'htmlspecialchars');
         $this->assign('keyword', $keyword);
         if ($keyword) {
-            $where['contract_no|supplier_code'] = ['like', '%' . strtoupper($keyword) . '%'];
+            $where['contract_no|contract_no_origin|state|supplier_code'] = ['like', '%' . strtoupper($keyword) . '%'];
         } else {
             $where = [];
         }
@@ -66,7 +66,9 @@ class ProcurementContractController extends BaseController
 
             Db::startTrans();
             try {
-                $contract['contract_no'] = ProcurementContractModel::createContract();
+                $contract['state'] = $post['state'];
+                $contract['contract_no_origin'] = ProcurementContractModel::createContractOrigin();
+                $contract['contract_no'] = $post['state'] == "US" ? $contract['contract_no_origin'] : $post['state'] . $contract['contract_no_origin'];
                 $contract['supplier_code'] = $post['supplier_code'];
                 $contract['created_id'] = Session::get(Config::get('USER_LOGIN_FLAG'));
                 $dataValidate = new ProcurementContractValidate();

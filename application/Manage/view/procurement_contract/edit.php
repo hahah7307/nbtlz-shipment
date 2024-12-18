@@ -8,6 +8,16 @@
         <div class="title">编辑采购合同</div>
         <div class="layui-form">
             <div class="layui-form-item">
+                <label class="layui-form-label">出口国家</label>
+                <div class="layui-input-block w300">
+                    <select name="state" lay-verify="required">
+                        <option value="US" {if condition="$info.state eq 'US'"}selected{/if}>US（美国）</option>
+                        <option value="SA" {if condition="$info.state eq 'SA'"}selected{/if}>SA（欧洲）</option>
+                        <option value="GB" {if condition="$info.state eq 'GB'"}selected{/if}>GB（英国）</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">供应商代码</label>
                 <div class="layui-input-inline w300">
                     <input type="text" class="layui-input" name="supplier_code" value="{$info.supplier_code}" disabled placeholder="请填写供应商代码">

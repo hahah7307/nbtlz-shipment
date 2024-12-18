@@ -8,6 +8,16 @@
         <div class="title">添加采购合同</div>
 		<div class="layui-form">
             <div class="layui-form-item">
+                <label class="layui-form-label">出口国家</label>
+                <div class="layui-input-block w300">
+                    <select name="state" lay-verify="required">
+                        <option value="US">US（美国）</option>
+                        <option value="SA">SA（欧洲）</option>
+                        <option value="GB">GB（英国）</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">供应商代码</label>
                 <div class="layui-input-inline w300">
                     <input type="text" class="layui-input" name="supplier_code" placeholder="请填写供应商代码">

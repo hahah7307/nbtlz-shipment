@@ -40,14 +40,14 @@ class ProcurementContractModel extends Model
     /**
      * @throws DbException
      */
-    static public function createContract(): string
+    static public function createContractOrigin(): string
     {
         $y = date('y');
         $m = date('m');
         $prefix = $y . 'TI' . $m;
         $contractObj = new ProcurementContractModel();
-        $contractList = $contractObj->where(['contract_no' => ['like', $prefix . '%']])->order('contract_no desc')->select();
-        $num = empty($contractList) ? 0 : intval(substr($contractList[0]['contract_no'], 6,9));
+        $contractList = $contractObj->where(['contract_no_origin' => ['like', $prefix . '%']])->order('contract_no_origin desc')->select();
+        $num = empty($contractList) ? 0 : intval(substr($contractList[0]['contract_no_origin'], 6,9));
         $num2str = sprintf("%03d", $num + 1);
 
         return $prefix . $num2str;

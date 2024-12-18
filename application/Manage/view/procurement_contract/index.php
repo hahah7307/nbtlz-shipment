@@ -29,6 +29,8 @@
 					<col width="150">
 					<col width="150">
 					<col>
+					<col>
+					<col>
                     {if condition="in_array(8, $role) or $user.super"}
 					<col width="100">
                     {/if}
@@ -39,7 +41,9 @@
 				<thead>
 					<tr>
 						<th>合同编号</th>
+						<th>原始合同编号</th>
 						<th>供应商代码</th>
+						<th>出口国家</th>
 						<th>SKU与数量</th>
                         {if condition="in_array(8, $role) or $user.super"}
 						<th>采购人员</th>
@@ -53,7 +57,9 @@
 					{foreach name="list" item="v"}
 						<tr>
 							<td>{$v.contract_no}</td>
+							<td>{$v.contract_no_origin}</td>
 							<td>{$v.supplier_code}</td>
+							<td>{if condition="$v.state eq 'SA'"}EU（{$v.state}）{elseif condition="$v.state eq 'GB'"/}UK（{$v.state}）{else/}{$v.state}{/if}</td>
 							<td>{$v.id|getContractSkuNumber}</td>
                             {if condition="in_array(8, $role) or $user.super"}
 							<td>{$v.account.nickname}</td>
