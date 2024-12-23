@@ -62,6 +62,7 @@
                     <input type="radio" name="box" value="2" title="两箱装">
                     <input type="radio" name="box" value="3" title="三箱装">
                     <input type="radio" name="box" value="4" title="四箱装">
+                    <input type="radio" name="box" value="5" title="五箱装">
                 </div>
             </div>
 			<div class="layui-form-item">
