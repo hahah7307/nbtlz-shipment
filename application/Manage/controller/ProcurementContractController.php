@@ -45,7 +45,7 @@ class ProcurementContractController extends BaseController
         $this->assign('page_num', $page_num);
 
         $list = new ProcurementContractModel();
-        $list = $list->with(['sku.sku', 'account'])->where($where)->order('id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
+        $list = $list->with(['sku.sku', 'account'])->where($where)->order('id desc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
         $this->assign('list', $list);
 
         Session::set(Config::get('BACK_URL'), $this->request->url(), 'manage');
