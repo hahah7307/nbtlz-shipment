@@ -25,6 +25,7 @@
             <li><a href="http://139.224.106.228/Manage/index/index.html" target="_blank">数据统计系统</a></li>
             <li><a href="http://47.100.200.11/Manage/Index/index.html" target="_blank">运营管理系统</a></li>
             <li><a href="http://47.101.47.220/Manage/Index/index.html" target="_blank">采购跟单系统</a></li>
+            <li><a href="http://106.14.244.208//Manage/Index/index.html" target="_blank">产品开发系统</a></li>
             <li><a href="http://139.196.102.61/Manage/Index/index.html" target="_blank">文件管理系统</a></li>
         </ul>
     </div>
