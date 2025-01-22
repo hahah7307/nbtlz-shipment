@@ -13,7 +13,7 @@
                         <cite>控制台</cite>
                     </a>
                 </li>
-                {if condition="$user.id eq 14 or $user.super"}
+                {if condition="in_array(7, $role) or $user.super"}
                 <li data-name="Storage" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="货号管理" lay-direction="2">
                         <i class="layui-icon iconfont icon-chanpin"></i>

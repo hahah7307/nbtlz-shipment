@@ -1,6 +1,7 @@
 <?php
 namespace app\Manage\controller;
 
+use app\Manage\model\AccountModel;
 use app\Manage\model\AlibabaCloudCredentialsWrapper;
 use app\Manage\model\AttributeModel;
 use app\Manage\model\CategoryModel;
@@ -33,6 +34,10 @@ class SkuController extends BaseController
             $where = [];
         }
 
+        // 查看权限
+        $access_ids = AccountModel::account_access_ids();
+        $where['purchaser_id'] = ['in', $access_ids];
+
         $state = $this->request->get('state');
         $this->assign('state', $state);
         if ($state != "") {
@@ -43,7 +48,7 @@ class SkuController extends BaseController
         $this->assign('page_num', $page_num);
 
         $list = new SkuModel();
-        $list = $list->with(['category.parent', 'attribute'])->where($where)->order('sku asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'state' => $state, 'page_num' => $page_num]]);
+        $list = $list->with(['category.parent', 'attribute', 'purchaser'])->where($where)->order('sku asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'state' => $state, 'page_num' => $page_num]]);
         $this->assign('list', $list);
 
         Session::set(Config::get('BACK_URL'), $this->request->url(), 'manage');
@@ -76,7 +81,8 @@ class SkuController extends BaseController
                         'description'   =>  $post['description'],
                         'created_id'    =>  $post['created_id'],
                         'created_at'    =>  date('Y-m-d H:i:s'),
-                        'updated_at'    =>  date('Y-m-d H:i:s')
+                        'updated_at'    =>  date('Y-m-d H:i:s'),
+                        'purchaser_id'  =>  $post['purchaser_id']
                     ];
                 }
                 $model = new SkuModel();
@@ -109,6 +115,7 @@ class SkuController extends BaseController
             $attribute = AttributeModel::attribute_format(AttributeModel::STATE_ACTIVE, [], 1);
             $this->assign('attribute', $attribute);
             $this->assign('id', $id);
+            $this->assign('purchaser', SkuModel::getActivePurchaser());
 
             return view();
         }

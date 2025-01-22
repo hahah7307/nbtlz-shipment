@@ -36,6 +36,7 @@
 					<col>
 					<col>
 					<col>
+					<col width="100">
 					<col width="80">
 					<col width="80">
 				</colgroup>
@@ -46,6 +47,7 @@
 						<th>描述</th>
 						<th>所属类目</th>
 						<th>所属属性</th>
+						<th>所属采购</th>
 						<th class="tc">是否启用</th>
 						<th class="tc">操作</th>
 					</tr>
@@ -58,6 +60,7 @@
 							<td>{$v.description}</td>
 							<td>{$v.category.parent.name} - {$v.category.name}</td>
 							<td>{$v.attribute.parent.name} - {$v.attribute.name}</td>
+                            <td>{$v.purchaser.nickname}</td>
 							<td class="tc">
 								<input type="checkbox" class="h30" name="look" value="{$v.id}" lay-skin="switch" lay-text="是|否" lay-filter="formLock" {if condition="$v.state eq 1"}checked{/if}>
 							</td>

@@ -65,6 +65,16 @@
                     <input type="radio" name="box" value="5" title="五箱装">
                 </div>
             </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属采购员</label>
+                <div class="layui-input-block w300">
+                    <select name="purchaser_id" lay-verify="required">
+                        {foreach name="purchaser" item="vp"}
+                        <option value="{$vp.id}" {if condition="$vp.id eq $user.id"}selected{/if}>{$vp.nickname}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
 			<div class="layui-form-item">
 				<div class="layui-input-block">
 					<button class="layui-btn w200" lay-submit lay-filter="formCoding">提交保存</button>

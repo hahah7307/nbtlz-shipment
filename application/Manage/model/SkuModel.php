@@ -39,6 +39,11 @@ class SkuModel extends Model
         return $this->hasOne('AttributeModel', 'id', 'attribute_id');
     }
 
+    public function purchaser(): \think\model\relation\HasOne
+    {
+        return $this->hasOne('AccountModel', 'id', 'purchaser_id');
+    }
+
     /**
      * @throws DbException
      */
@@ -67,5 +72,16 @@ class SkuModel extends Model
         $attribute = AttributeModel::get($attribute_id);
 
         return $category['code'] . sprintf("%03d", intval($index)) . $attribute['code'];
+    }
+
+    /**
+     * @throws DbException
+     */
+    static public function getActivePurchaser()
+    {
+        $model = new AdminUserRoleModel();
+        $userIds = $model->where(['role_id' => 7])->column('user_id');
+        $accountObj = new AccountModel();
+        return $accountObj->where(['status' => 1, 'id' => ['in', $userIds]])->select();
     }
 }

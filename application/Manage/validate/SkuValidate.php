@@ -12,6 +12,7 @@ class SkuValidate extends Validate
         'created_id'    =>  'require',
         'category_id'   =>  'require',
         'attribute_id'  =>  'require',
+        'purchaser_id'  =>  'require',
     ];
 
     protected $message = [
@@ -24,10 +25,11 @@ class SkuValidate extends Validate
         'created_id'    =>  '领取人',
         'category_id'   =>  '所属类目',
         'attribute_id'  =>  '所属属性',
+        'purchaser_id'  =>  '所属采购',
     ];
 
     protected $scene = [
-        'add'           =>  ['sku', 'name', 'created_id', 'category_id', 'attribute_id'],
-        'edit'          =>  ['sku', 'name', 'created_id', 'category_id', 'attribute_id'],
+        'add'           =>  ['sku', 'name', 'created_id', 'category_id', 'attribute_id', 'purchaser_id'],
+        'edit'          =>  ['sku', 'name', 'created_id', 'category_id', 'attribute_id', 'purchaser_id'],
     ];
 }
