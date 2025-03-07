@@ -56,4 +56,9 @@ return [
         2   =>  '换船',
         3   =>  '船期延误',
     ],
+
+    'ec_wms_uri'                =>  'https://nt5e7hf.eccang.com/default/svc-open/web-service-v2',
+    'ec_eb_uri'                 =>  'http://nt5e7hf-eb.eccang.com/default/svc-open/web-service-v2',
+    'ec_warehouse_username'     =>  'HQJL',
+    'ec_warehouse_userpass'     =>  'WBBwala361@16',
 ];

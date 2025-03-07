@@ -45,6 +45,15 @@
                         <dd><a layui-href="{:url('Export/index')}">外销编号</a></dd>
                     </dl>
                 </li>
+                <li data-name="Ship" class="layui-nav-item">
+                    <a layui-href="javascript:;" lay-tips="头程" lay-direction="2">
+                        <i class="layui-icon iconfont icon-a-36chuyun"></i>
+                        <cite>头程</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a layui-href="{:url('Ship/warehouse')}">海外仓明细</a></dd>
+                    </dl>
+                </li>
                 {/if}
                 {if condition="$user.id eq 14 or $user.super"}
                 <li data-name="Finance" class="layui-nav-item">
