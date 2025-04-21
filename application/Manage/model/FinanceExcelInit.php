@@ -61,6 +61,53 @@ class FinanceExcelInit extends Model
         }
     }
 
+    /**
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws DataNotFoundException
+     */
+    public function getShipBatch($index, $list)
+    {
+        if ($index) {
+            // create new sheet
+            $this->objPHPExcel->createSheet();
+        }
+
+        // Set name sheet
+        $this->objPHPExcel->setActiveSheetIndex($index)->setTitle('海外仓头程明细');
+
+        // Add some data
+        $this->objPHPExcel->setActiveSheetIndex($index)
+            ->setCellValue('A1', '采购合同号')
+            ->setCellValue('B1', '工厂代码')
+            ->setCellValue('C1', 'SKU')
+            ->setCellValue('D1', '中文品名')
+            ->setCellValue('E1', '采购单价')
+            ->setCellValue('F1', '采购总数')
+            ->setCellValue('G1', '采购合计')
+            ->setCellValue('H1', '外销合同号')
+            ->setCellValue('I1', '本票出运数量')
+            ->setCellValue('J1', '本票出运合计')
+        ;
+
+        $shipBatchIndex = 1;
+        foreach ($list as $shipBatchItem) {
+            $shipBatchIndex ++;
+            $this->objPHPExcel->setActiveSheetIndex($index)
+                ->setCellValue('A' . $shipBatchIndex, $shipBatchItem['ref_no'])
+                ->setCellValue('B' . $shipBatchIndex, $shipBatchItem['supplier_code'])
+                ->setCellValue('C' . $shipBatchIndex, $shipBatchItem['product_barcode'])
+                ->setCellValue('D' . $shipBatchIndex, $shipBatchItem['product_title'])
+                ->setCellValue('E' . $shipBatchIndex, $shipBatchItem['unit_price'])
+                ->setCellValue('F' . $shipBatchIndex, $shipBatchItem['qty_expected'])
+                ->setCellValue('G' . $shipBatchIndex, $shipBatchItem['payable_amount'])
+                ->setCellValue('H' . $shipBatchIndex, $shipBatchItem['remark'])
+                ->setCellValue('I' . $shipBatchIndex, $shipBatchItem['sum'])
+                ->setCellValue('J' . $shipBatchIndex, $shipBatchItem['sum'] * $shipBatchItem['unit_price'])
+            ;
+        }
+    }
+
     public function excelSheetSet()
     {
         return $this->objPHPExcel;

@@ -1,9 +1,13 @@
 <?php
 namespace app\Manage\controller;
 
-use app\Manage\model\PortModel;
-use app\Manage\model\ShipBatchModel;
-use app\Manage\validate\PortValidate;
+use app\Manage\model\FinanceExcelInit;
+use app\Manage\model\PurchaseOrderModel;
+use PHPExcel;
+use PHPExcel_IOFactory;
+use think\Db;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\DbException;
 use think\Session;
 use think\Config;
@@ -19,111 +23,134 @@ class ShipController extends BaseController
         $keyword = $this->request->get('keyword', '', 'htmlspecialchars');
         $this->assign('keyword', $keyword);
         if ($keyword) {
-            $where['name|code'] = ['like', '%' . strtoupper($keyword) . '%'];
+            $purchaseOrderModel = new PurchaseOrderModel();
+            $purchaseOrder = $purchaseOrderModel->where(['supplier_code' => strtoupper($keyword)])->select()->count();
+            if (!empty($purchaseOrder)) {
+                $where['supplier_code'] = strtoupper($keyword);
+            } else {
+                $where['remark'] = ['like', '%' . strtoupper($keyword) . '%'];
+            }
+        } else {
+            $where['remark'] = "no data";
         }
 
-        // 仓库列表
-        $storage = new ShipBatchModel();
-        $list = $storage->with(['packingInfo', 'packingReceiving', 'dgOrder', 'productInfo', 'receivingPurchase'])->where($where)->order('id asc')->paginate(Config::get('PAGE_NUM'));
+        $page_num = $this->request->get('page_num', Config::get('PAGE_NUM'));
+        $this->assign('page_num', $page_num);
+
+        // 列表
+        $list = Db::name('ecang_ship_batch')
+            ->alias('a')
+            ->join('ecang_ship_batch_packing_receiving_and_purchase_info b', 'a.id = b.ship_batch_id', 'LEFT')
+            ->join('ecang_ship_batch_product_info c', 'b.product_barcode = c.product_barcode AND a.id = c.ship_batch_id', 'LEFT')
+            ->join('ecang_purchase_order d', 'b.po_code = d.po_code', 'LEFT')
+            ->join('ecang_purchase_order_detail e', 'd.id = e.order_id AND b.product_barcode = e.product_sku', 'LEFT')
+            ->where($where)
+            ->group('a.id,
+	d.id,
+	a.remark,
+	b.product_barcode,
+	b.po_code,
+	c.product_title,
+	d.ref_no,
+	d.supplier_code,
+	e.qty_expected,
+	d.payable_amount,
+	e.unit_price')
+            ->field('a.id,
+	d.id,
+	a.remark,
+	b.product_barcode,
+	b.po_code,
+	c.product_title,
+	d.ref_no,
+	d.supplier_code,
+	e.qty_expected,
+	d.payable_amount,
+	e.unit_price,
+	SUM(quantity) sum')
+            ->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
         $this->assign('list', $list);
+
+        $total = array_sum(array_map(function($item) {
+            return $item['unit_price'] * $item['sum'];
+        }, $list->toArray()['data']));
+        $this->assign('total', $total);
+        $this->assign('sum', array_sum(array_column($list->toArray()['data'],'sum')));
 
         Session::set(Config::get('BACK_URL'), $this->request->url(), 'manage');
         return view();
     }
 
-    // 添加
-    public function add()
-    {
-        if ($this->request->isPost()) {
-            $post = $this->request->post();
-            $post['state'] = PortModel::STATE_ACTIVE;
-            $dataValidate = new PortValidate();
-            if ($dataValidate->scene('add')->check($post)) {
-                $model = new PortModel();
-                if ($model->allowField(true)->save($post)) {
-                    echo json_encode(['code' => 1, 'msg' => '添加成功']);
-                } else {
-                    echo json_encode(['code' => 0, 'msg' => '添加失败，请重试']);
-                }
-            } else {
-                echo json_encode(['code' => 0, 'msg' => $dataValidate->getError()]);
-            }
-            exit;
-        } else {
-
-            return view();
-        }
-    }
-
-    // 编辑
-
     /**
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws DbException
+     * @throws \PHPExcel_Writer_Exception
      */
-    public function edit($id)
+    public function warehouse_export($keyword)
     {
-        if ($this->request->isPost()) {
-            $post = $this->request->post();
-            $info = PortModel::get(['id' => $id,]);
-            $post['state'] = $info['state'];
-            $dataValidate = new PortValidate();
-            if ($dataValidate->scene('edit')->check($post)) {
-                $model = new PortModel();
-                if ($model->allowField(true)->save($post, ['id' => $id])) {
-                    echo json_encode(['code' => 1, 'msg' => '修改成功']);
-                } else {
-                    echo json_encode(['code' => 0, 'msg' => '修改失败，请重试']);
-                }
+        $where = [];
+        if ($keyword) {
+            $purchaseOrderModel = new PurchaseOrderModel();
+            $purchaseOrder = $purchaseOrderModel->where(['supplier_code' => strtoupper($keyword)])->select()->count();
+            if (!empty($purchaseOrder)) {
+                $where['supplier_code'] = strtoupper($keyword);
             } else {
-                echo json_encode(['code' => 0, 'msg' => $dataValidate->getError()]);
+                $where['remark'] = ['like', '%' . strtoupper($keyword) . '%'];
             }
-            exit;
         } else {
-            $info = PortModel::get(['id' => $id,]);
-            $this->assign('info', $info);
-
-            return view();
+            $where['remark'] = "no data";
         }
-    }
 
-    // 删除
+        // 列表
+        $list = Db::name('ecang_ship_batch')
+            ->alias('a')
+            ->join('ecang_ship_batch_packing_receiving_and_purchase_info b', 'a.id = b.ship_batch_id', 'LEFT')
+            ->join('ecang_ship_batch_product_info c', 'b.product_barcode = c.product_barcode AND a.id = c.ship_batch_id', 'LEFT')
+            ->join('ecang_purchase_order d', 'b.po_code = d.po_code', 'LEFT')
+            ->join('ecang_purchase_order_detail e', 'd.id = e.order_id AND b.product_barcode = e.product_sku', 'LEFT')
+            ->where($where)
+            ->group('a.id,
+	d.id,
+	a.remark,
+	b.product_barcode,
+	b.po_code,
+	c.product_title,
+	d.ref_no,
+	d.supplier_code,
+	e.qty_expected,
+	d.payable_amount,
+	e.unit_price')
+            ->field('a.id,
+	d.id,
+	a.remark,
+	b.product_barcode,
+	b.po_code,
+	c.product_title,
+	d.ref_no,
+	d.supplier_code,
+	e.qty_expected,
+	d.payable_amount,
+	e.unit_price,
+	SUM(quantity) sum')
+            ->select();
 
-    /**
-     * @throws DbException
-     */
-    public function delete()
-    {
-        if ($this->request->isPost()) {
-            $post = $this->request->post();
-            $block = PortModel::get($post['id']);
-            if ($block->delete()) {
-                echo json_encode(['code' => 1, 'msg' => '操作成功']);
-            } else {
-                echo json_encode(['code' => 0, 'msg' => '操作失败，请重试']);
-            }
-            exit;
-        } else {
-            echo json_encode(['code' => 0, 'msg' => '异常操作']);
-            exit;
-        }
-    }
+        // phpexcel
+        require_once './static/classes/PHPExcel/Classes/PHPExcel.php';
+        // Create new PHPExcel object
+        $objPHPExcel = new PHPExcel();
+        $financeExcelInit = new FinanceExcelInit($objPHPExcel);
+        $financeExcelInit->getShipBatch(0, $list);
+        $objPHPExcel = $financeExcelInit->excelSheetSet();
 
-    // 状态切换
+        // Redirect output to a client’s web browser (Excel5)
+        header('Content-Type: application/vnd.ms-excel');
+        $filename = date("YmdHis") . time() . mt_rand(100000, 999999);
+        ob_end_clean();
+        header('Content-Disposition:attachment;filename="'.$filename.'.xls"');
+        header('Cache-Control: max-age=0');
 
-    /**
-     * @throws DbException
-     */
-    public function status()
-    {
-        if ($this->request->isPost()) {
-            $post = $this->request->post();
-            $user = PortModel::get($post['id']);
-            $user['state'] = $user['state'] == PortModel::STATE_ACTIVE ? 0 : PortModel::STATE_ACTIVE;
-            $user->save();
-            echo json_encode(['code' => 1, 'msg' => '操作成功']);
-        } else {
-            echo json_encode(['code' => 0, 'msg' => '异常操作']);
-        }
-        exit;
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
     }
 }

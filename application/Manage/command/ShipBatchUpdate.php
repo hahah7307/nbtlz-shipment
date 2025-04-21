@@ -74,6 +74,8 @@ class ShipBatchUpdate extends Command
                             if ($product_info['op_ref_paydate'] == '0000-00-00 00:00:00') {
                                 $item['product_info'][$key]['op_ref_paydate'] = null;
                             }
+                            $item['product_info'][$key]['serial_no_list'] = json_encode($product_info['serial_no_list']);
+                            $item['product_info'][$key]['custom_number'] = json_encode($product_info['custom_number']);
                             $item['product_info'][$key]['ship_batch_id'] = $createdId;
                         }
                         $productInfoObj = new ShipBatchProductInfoModel();

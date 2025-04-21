@@ -51,7 +51,7 @@
                         <cite>头程</cite>
                     </a>
                     <dl class="layui-nav-child">
-                        <dd><a layui-href="{:url('Ship/warehouse')}">海外仓明细</a></dd>
+                        <dd><a layui-href="{:url('Ship/warehouse')}">海外仓头程明细</a></dd>
                     </dl>
                 </li>
                 {/if}

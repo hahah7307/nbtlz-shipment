@@ -1,6 +1,9 @@
 
 {include file="public/header" /}
 
+<style>
+    .total {padding: 0 20px 0 0}
+</style>
 <!-- 主体内容 -->
 <div class="layui-body" id="LAY_app_body">
     <div class="right">
@@ -16,11 +19,13 @@
                 <button class="layui-btn" lay-submit lay-filter="Search"><i class="layui-icon">&#xe615;</i> 查询</button>
             </div>
             <div class="layui-inline">
-                <a class="layui-btn layui-btn-normal" href="{:url('index')}"><i class="layui-icon">&#xe669;</i> 重置</a>
+                <a class="layui-btn layui-btn-normal" href="{:url('warehouse_export', ['keyword' => $keyword])}"><i class="layui-icon">&#xe655;</i> 导出</a>
             </div>
         </form>
 
 		<div class="layui-form">
+            <span class="total">出运数量：{$sum|number_format=###}</span>
+            <span class="total">出运金额：{$total|number_format=###, 2}</span>
 			<table class="layui-table" lay-size="sm">
 				<colgroup>
 					<col>
@@ -34,45 +39,36 @@
                     <col>
                     <col>
                     <col>
-                    <col>
-                    <col>
-					<col>
 				</colgroup>
 				<thead>
 					<tr>
-                        <th>order_code</th>
-                        <th>reference_no</th>
-                        <th>parcel_quantity</th>
-                        <th>remark</th>
-                        <th>stpo_code</th>
-                        <th>to_warehouse</th>
-                        <th>warehouse</th>
-                        <th>so_weight</th>
-                        <th>box_count</th>
-                        <th>amount</th>
-                        <th>user_account</th>
-                        <th>oab_state</th>
-                        <th>system_weight</th>
-                        <th>create_user</th>
+                        <th>外销合同号</th>
+                        <th>易仓PO号</th>
+                        <th>采购合同号</th>
+                        <th>工厂代码</th>
+                        <th>SKU</th>
+                        <th>中文品名</th>
+                        <th>采购单价</th>
+                        <th>采购总数</th>
+                        <th>采购合计</th>
+                        <th>本票出运数量</th>
+                        <th>本票出运合计</th>
 					</tr>
 				</thead>
 				<tbody>
 					{foreach name="list" item="v"}
 						<tr>
-							<td>{$v.order_code}</td>
-							<td>{$v.reference_no}</td>
-                            <td class="tr">{$v.parcel_quantity}</td>
-                            <td>{$v.remark}</td>
-                            <td>{$v.stpo_code}</td>
-                            <td>{$v.to_warehouse}</td>
-                            <td>{$v.warehouse}</td>
-                            <td class="tr">{$v.so_weight}</td>
-                            <td class="tr">{$v.box_count}</td>
-                            <td class="tr">{$v.amount}</td>
-                            <td>{$v.user_account}</td>
-                            <td>{$v.oab_state}</td>
-                            <td class="tr">{$v.system_weight}</td>
-                            <td>{$v.create_user}</td>
+							<td>{$v.remark}</td>
+                            <td>{$v.po_code}</td>
+                            <td>{$v.ref_no}</td>
+                            <td>{$v.supplier_code}</td>
+							<td>{$v.product_barcode}</td>
+                            <td>{$v.product_title}</td>
+                            <td class="tr">{$v.unit_price}</td>
+                            <td class="tr">{$v.qty_expected}</td>
+                            <td class="tr">{$v.payable_amount|number_format=###, 2}</td>
+                            <td class="tr">{$v.sum}</td>
+                            <td class="tr">{$v.sum * $v.unit_price|number_format=###, 2}</td>
 						</tr>
 					{/foreach}
 				</tbody>
