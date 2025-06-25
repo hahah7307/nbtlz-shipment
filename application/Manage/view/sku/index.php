@@ -16,6 +16,12 @@
                     <option value="1" {if condition="$state eq 1"}selected{/if}>使用中</option>
                 </select>
             </div>
+            <div class="layui-inline w120">
+                <select name="order" lay-verify="">
+                    <option value="sku" {if condition="$order eq 'sku'"}selected{/if}>按SKU</option>
+                    <option value="time" {if condition="$order eq 'time'"}selected{/if}>按时间</option>
+                </select>
+            </div>
             <div class="layui-inline w100">
                 <input type="text" class="layui-input" name="page_num" value="{$page_num}" placeholder="每页条数">
             </div>
@@ -37,7 +43,8 @@
 					<col>
 					<col>
 					<col width="100">
-					<col width="80">
+					<col>
+                    <col width="80">
 					<col width="80">
 				</colgroup>
 				<thead>
@@ -48,6 +55,7 @@
 						<th>所属类目</th>
 						<th>所属属性</th>
 						<th>所属采购</th>
+                        <th>创建时间</th>
 						<th class="tc">是否启用</th>
 						<th class="tc">操作</th>
 					</tr>
@@ -61,6 +69,7 @@
 							<td>{$v.category.parent.name} - {$v.category.name}</td>
 							<td>{$v.attribute.parent.name} - {$v.attribute.name}</td>
                             <td>{$v.purchaser.nickname}</td>
+                            <td>{$v.created_at}</td>
 							<td class="tc">
 								<input type="checkbox" class="h30" name="look" value="{$v.id}" lay-skin="switch" lay-text="是|否" lay-filter="formLock" {if condition="$v.state eq 1"}checked{/if}>
 							</td>

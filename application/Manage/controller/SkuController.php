@@ -44,11 +44,21 @@ class SkuController extends BaseController
             $where['state'] = $state;
         }
 
+        $order = $this->request->get('order');
+        $this->assign('order', $order);
+        if ($order == "sku") {
+            $orderBy = 'sku asc';
+        } elseif ($order == "time") {
+            $orderBy = 'created_at desc';
+        } else {
+            $orderBy = 'sku asc';
+        }
+
         $page_num = $this->request->get('page_num', Config::get('PAGE_NUM'));
         $this->assign('page_num', $page_num);
 
         $list = new SkuModel();
-        $list = $list->with(['category.parent', 'attribute', 'purchaser'])->where($where)->order('sku asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'state' => $state, 'page_num' => $page_num]]);
+        $list = $list->with(['category.parent', 'attribute', 'purchaser'])->where($where)->order($orderBy)->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'state' => $state, 'page_num' => $page_num]]);
         $this->assign('list', $list);
 
         Session::set(Config::get('BACK_URL'), $this->request->url(), 'manage');
