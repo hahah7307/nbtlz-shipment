@@ -55,6 +55,19 @@
                     </dl>
                 </li>
                 {/if}
+                {if condition="in_array(10, $role) or $user.super"}
+                <li data-name="Storage" class="layui-nav-item">
+                    <a layui-href="javascript:;" lay-tips="单证管理" lay-direction="2">
+                        <i class="layui-icon iconfont icon-a-36chuyun"></i>
+                        <cite>单证管理</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a layui-href="{:url('Logistics/export_table')}">外销表（导入）</a></dd>
+                        <dd><a layui-href="{:url('Logistics/export_sku')}">出运SKU明细列表</a></dd>
+                        <dd><a layui-href="{:url('Logistics/month_mapping')}">基础月份映射</a></dd>
+                    </dl>
+                </li>
+                {/if}
                 {if condition="$user.id eq 14 or $user.super"}
                 <li data-name="Finance" class="layui-nav-item">
                     <a layui-href="javascript:;" lay-tips="工厂" lay-direction="2">

@@ -14,4 +14,5 @@ return [
     'app\Manage\command\ReceivingCapture', // * * * * *
     'app\Manage\command\ReceivingUpdate', // * * * * *
     'app\Manage\command\PurchaseOrderUpdate', // * * * * *
+    'app\Manage\command\LogisticsSkuNotify', // * * * * *
     ];
