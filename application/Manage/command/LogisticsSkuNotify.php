@@ -33,7 +33,7 @@ class LogisticsSkuNotify extends Command
                 } else {
                     $created_month = date('Ym');
                     $created_date = date('Ymd');
-                    $maxIndexSku = max($logisticsSkuObj->where(['is_notify' => 1, 'created_month' => $created_month, 'origin_sku' => $item['origin_sku']])->order('id asc')->column('month_index'));
+                    $maxIndexSku = max($logisticsSkuObj->where(['is_notify' => 1, 'origin_sku' => $item['origin_sku']])->order('id asc')->column('month_index'));
                     $sameOriginSku = $logisticsSkuObj->where(['table_id' => $item['table_id'], 'export_no' => $item['export_no'], 'origin_sku' => $item['origin_sku'], 'is_notify' => 1])->count();
                     if (empty($sameOriginSku)) {
                         $maxIndexSku = intval($maxIndexSku) + 1;
