@@ -2,9 +2,11 @@
 namespace app\Manage\controller;
 
 use app\Manage\model\AccountModel;
+use app\Manage\model\FinanceExcelInit;
 use app\Manage\model\LogisticsExportSkuModel;
 use app\Manage\model\LogisticsExportTableModel;
 use app\Manage\model\LogisticsMonthModel;
+use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Reader_Exception;
 use think\Db;
@@ -115,9 +117,45 @@ class LogisticsController extends BaseController
 
         $storage = new LogisticsExportSkuModel();
         $list = $storage->where($where)->order('id asc')->paginate($page_num, false, ['query' => ['id' => $id, 'page_num' => $page_num]]);
+        $newSkuList = $storage->where($where)->order('id asc')->column('new_sku');
+        $this->assign('newSku', implode("\n", $newSkuList));
         $this->assign('list', $list);
+        $this->assign('id', $id);
 
         return view();
+    }
+
+    /**
+     * @throws DataNotFoundException
+     * @throws \PHPExcel_Writer_Exception
+     * @throws ModelNotFoundException
+     * @throws PHPExcel_Reader_Exception
+     * @throws DbException
+     */
+    public function export_detail_export($id)
+    {
+        $where = [];
+        $where['table_id'] = $id;
+        $storage = new LogisticsExportSkuModel();
+        $list = $storage->where($where)->order('id asc')->select();
+
+        // phpexcel
+        require_once './static/classes/PHPExcel/Classes/PHPExcel.php';
+        // Create new PHPExcel object
+        $objPHPExcel = new PHPExcel();
+        $financeExcelInit = new FinanceExcelInit($objPHPExcel);
+        $financeExcelInit->getExportDetail(0, $list);
+        $objPHPExcel = $financeExcelInit->excelSheetSet();
+
+        // Redirect output to a client’s web browser (Excel5)
+        header('Content-Type: application/vnd.ms-excel');
+        $filename = date("YmdHis") . time() . mt_rand(100000, 999999);
+        ob_end_clean();
+        header('Content-Disposition:attachment;filename="'.$filename.'.xls"');
+        header('Cache-Control: max-age=0');
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
     }
 
     /**
@@ -132,9 +170,9 @@ class LogisticsController extends BaseController
         $this->assign('keyword', $keyword);
         if ($keyword) {
             $logisticsExportSkuModel = new LogisticsExportSkuModel();
-            $export = $logisticsExportSkuModel->where(['export_no' => strtoupper($keyword)])->select()->count();
+            $export = $logisticsExportSkuModel->where(['export_no' => ['like', '%' . strtoupper($keyword) . '%']])->select()->count();
             if (!empty($export)) {
-                $where['export_no'] = strtoupper($keyword);
+                $where['export_no'] = ['like', '%' . strtoupper($keyword) . '%'];
             } else {
                 $where['warehouse_sku|origin_sku|new_sku'] = ['like', '%' . strtoupper($keyword) . '%'];
             }
@@ -144,10 +182,54 @@ class LogisticsController extends BaseController
         $this->assign('page_num', $page_num);
 
         $storage = new LogisticsExportSkuModel();
-        $list = $storage->where($where)->order('id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
+        $list = $storage->where($where)->order('table_id desc id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
+        $newSkuList = $storage->where($where)->order('table_id desc id asc')->column('new_sku');
+        $this->assign('newSku', implode("\n", $newSkuList));
         $this->assign('list', $list);
 
         return view();
+    }
+
+    /**
+     * @throws DataNotFoundException
+     * @throws \PHPExcel_Writer_Exception
+     * @throws ModelNotFoundException
+     * @throws PHPExcel_Reader_Exception
+     * @throws DbException
+     */
+    public function export_sku_export($keyword = "")
+    {
+        $where = [];
+        if ($keyword) {
+            $logisticsExportSkuModel = new LogisticsExportSkuModel();
+            $export = $logisticsExportSkuModel->where(['export_no' => ['like', '%' . strtoupper($keyword) . '%']])->select()->count();
+            if (!empty($export)) {
+                $where['export_no'] = ['like', '%' . strtoupper($keyword) . '%'];
+            } else {
+                $where['warehouse_sku|origin_sku|new_sku'] = ['like', '%' . strtoupper($keyword) . '%'];
+            }
+        }
+
+        $storage = new LogisticsExportSkuModel();
+        $list = $storage->where($where)->order('table_id desc id asc')->select();
+
+        // phpexcel
+        require_once './static/classes/PHPExcel/Classes/PHPExcel.php';
+        // Create new PHPExcel object
+        $objPHPExcel = new PHPExcel();
+        $financeExcelInit = new FinanceExcelInit($objPHPExcel);
+        $financeExcelInit->getExportSku(0, $list);
+        $objPHPExcel = $financeExcelInit->excelSheetSet();
+
+        // Redirect output to a client’s web browser (Excel5)
+        header('Content-Type: application/vnd.ms-excel');
+        $filename = date("YmdHis") . time() . mt_rand(100000, 999999);
+        ob_end_clean();
+        header('Content-Disposition:attachment;filename="'.$filename.'.xls"');
+        header('Cache-Control: max-age=0');
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
     }
 
     /**

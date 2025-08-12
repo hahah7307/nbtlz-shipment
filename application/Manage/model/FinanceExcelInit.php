@@ -108,6 +108,72 @@ class FinanceExcelInit extends Model
         }
     }
 
+    /**
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws DataNotFoundException
+     */
+    public function getExportDetail($index, $list)
+    {
+        if ($index) {
+            // create new sheet
+            $this->objPHPExcel->createSheet();
+        }
+
+        // Set name sheet
+        $this->objPHPExcel->setActiveSheetIndex($index)->setTitle('外销号出库明细');
+
+        // Add some data
+        $this->objPHPExcel->setActiveSheetIndex($index)
+            ->setCellValue('A1', '外销编号')
+            ->setCellValue('B1', '仓库SKU')
+            ->setCellValue('C1', '新SKU')
+        ;
+
+        $detailIndex = 1;
+        foreach ($list as $detailItem) {
+            $detailIndex ++;
+            $this->objPHPExcel->setActiveSheetIndex($index)
+                ->setCellValue('A' . $detailIndex, $detailItem['export_no'])
+                ->setCellValue('B' . $detailIndex, $detailItem['warehouse_sku'])
+                ->setCellValue('C' . $detailIndex, $detailItem['new_sku'])
+            ;
+        }
+    }
+
+    /**
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws DataNotFoundException
+     */
+    public function getExportSku($index, $list)
+    {
+        if ($index) {
+            // create new sheet
+            $this->objPHPExcel->createSheet();
+        }
+
+        // Set name sheet
+        $this->objPHPExcel->setActiveSheetIndex($index)->setTitle('出运Sku明细');
+
+        // Add some data
+        $this->objPHPExcel->setActiveSheetIndex($index)
+            ->setCellValue('A1', '外销编号')
+            ->setCellValue('B1', '仓库SKU')
+            ->setCellValue('C1', '新SKU')
+        ;
+
+        $detailIndex = 1;
+        foreach ($list as $detailItem) {
+            $detailIndex ++;
+            $this->objPHPExcel->setActiveSheetIndex($index)
+                ->setCellValue('A' . $detailIndex, $detailItem['export_no'])
+                ->setCellValue('B' . $detailIndex, $detailItem['warehouse_sku'])
+                ->setCellValue('C' . $detailIndex, $detailItem['new_sku'])
+            ;
+        }
+    }
+
     public function excelSheetSet()
     {
         return $this->objPHPExcel;

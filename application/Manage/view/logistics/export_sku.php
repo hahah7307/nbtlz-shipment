@@ -10,13 +10,19 @@
         <div class="title">出运SKU明细列表</div>
         <form class="layui-form search-form" method="get">
             <div class="layui-inline w200">
-                <input type="text" class="layui-input" name="keyword" value="{$keyword}" placeholder="">
+                <input type="text" class="layui-input" name="keyword" value="{$keyword}" placeholder="外销编号/仓库SKU/新SKU">
             </div>
             <div class="layui-inline w100">
                 <input type="text" class="layui-input" name="page_num" value="{$page_num}" placeholder="每页条数">
             </div>
             <div class="layui-inline">
                 <button class="layui-btn" lay-submit lay-filter="Search"><i class="layui-icon">&#xe615;</i> 查询</button>
+            </div>
+            <div class="layui-inline">
+                <a class="layui-btn layui-btn-normal" href="{:url('export_sku_export', ['keyword' => $keyword])}"><i class="layui-icon">&#xe655;</i> 导出</a>
+            </div>
+            <div class="layui-inline">
+                <button type="button" class="layui-btn layui-btn-normal" lay-submit lay-filter="Copy"><i class="layui-icon">&#xe621;</i> 复制</button>
             </div>
         </form>
 
@@ -79,29 +85,34 @@ layui.use(['form', 'jquery', 'laydate'], function(){
         type: 'datetime'
     });
 
-    // 排序
-	form.on('submit(Sort)', function(data){
-		var text = $(this).text(), button = $(this);
-		$('button').attr('disabled',true);
-		button.text('请稍候...');
-		$.ajax({
-			type:'POST',url:"{:url('sort')}",data:data.field,dataType:'json',
-			success:function(data){
-				if(data.code === 1){
-					layer.alert(data.msg,{icon:1,closeBtn:0,title:false,btnAlign:'c'},function(){
-						location.reload();
-					});
-				}else{
-					layer.alert(data.msg,{icon:2,closeBtn:0,title:false,btnAlign:'c'},function(){
-						layer.closeAll();
-						$('button').attr('disabled',false);
-						button.text(text);
-					});
-				}
-			}
-		});
-		return false;
-	});
+    // 复制
+    form.on('submit(Copy)', function(data){
+        const text = `{$newSku}`;
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';  // 防止页面跳动
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        console.log(textarea);
+
+        textarea.focus();
+        textarea.select();
+
+        try {
+            const success = document.execCommand('copy');
+            if (success) {
+                layer.msg('复制成功', {icon: 6});
+            } else {
+                layer.msg('复制失败，请手动复制', {icon: 5});
+            }
+        } catch (err) {
+            layer.msg('复制失败，请手动复制', {icon: 5});
+        }
+
+        document.body.removeChild(textarea);
+
+        return false;
+    });
 });
 </script>
 

@@ -10,7 +10,7 @@
         <div class="title">外销表（导入）</div>
         <form class="layui-form search-form" method="get">
             <div class="layui-inline w200">
-                <input type="text" class="layui-input" name="keyword" value="{$keyword}" placeholder="">
+                <input type="text" class="layui-input" name="keyword" value="{$keyword}" placeholder="文件名">
             </div>
             <div class="layui-inline">
                 <button class="layui-btn" lay-submit lay-filter="Search"><i class="layui-icon">&#xe615;</i> 查询</button>
