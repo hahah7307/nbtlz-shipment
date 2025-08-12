@@ -26,7 +26,7 @@ class LogisticsSkuNotify extends Command
 
         Db::startTrans();
         try {
-            foreach ($skuData as $key => $item) {
+            foreach ($skuData as $item) {
                 $sku = $logisticsSkuObj->find($item['id']);
                 if ($sku['is_notify'] != 0) {
                     continue;
@@ -43,15 +43,12 @@ class LogisticsSkuNotify extends Command
                     $logisticsMonth = $monthObj->where(['month_char' => date('m')])->find();
 
                     $originNum = intval(substr($item['origin_sku'], 3, 3));
-                    $newNumStr = sprintf("%03d", $originNum + $maxIndexSku);
-
-                    $newSku = $logisticsMonth['month_code_pre'] . substr($item['origin_sku'], 0, 3) . $logisticsMonth['month_code_index'] . $newNumStr . substr($item['origin_sku'], 6, 2) . substr($item['warehouse_sku'], 8, 2);
-
+                    $newSkuArr = self::generateNewSku($logisticsMonth, $item, $originNum, $maxIndexSku);
                     $updateData = [
-                        'new_sku'       =>  $newSku,
+                        'new_sku'       =>  $newSkuArr['new_sku'],
                         'created_month' =>  $created_month,
                         'created_date'  =>  $created_date,
-                        'month_index'   =>  $maxIndexSku,
+                        'month_index'   =>  $newSkuArr['month_index'],
                         'is_notify'     =>  1,
                         'notify_date'   =>  date('Y-m-d H:i:s')
                     ];
@@ -69,6 +66,24 @@ class LogisticsSkuNotify extends Command
         } catch (\Exception $e) {
             Db::rollback();
             dump('Exception:'.$e);
+        }
+    }
+
+    /**
+     * @throws \think\Exception
+     */
+    static private function generateNewSku($logisticsMonth, $item, $originNum, $maxIndexSku): array
+    {
+        $newNumStr = sprintf("%03d", $originNum + $maxIndexSku);
+        $newSku = $logisticsMonth['month_code_pre'] . substr($item['origin_sku'], 0, 3) . $logisticsMonth['month_code_index'] . $newNumStr . substr($item['origin_sku'], 6, 2) . substr($item['warehouse_sku'], 8, 2);
+
+        $model = new LogisticsExportSkuModel();
+        $count = $model->where(['new_sku' => $newSku])->count();
+        if ($count > 0) {
+            $maxIndexSku++;
+            return self::generateNewSku($logisticsMonth, $item, $originNum, $maxIndexSku);
+        } else {
+            return ['new_sku' => $newSku, 'month_index' => $maxIndexSku];
         }
     }
 }
