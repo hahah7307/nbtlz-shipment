@@ -34,8 +34,8 @@ class LogisticsController extends BaseController
         }
 
         // 查看权限
-        $access_ids = AccountModel::account_access_ids();
-        $where['user_id'] = ['in', $access_ids];
+//        $access_ids = AccountModel::account_access_ids();
+//        $where['user_id'] = ['in', $access_ids];
 
         // 报价单列表
         $quoteTableObj = new LogisticsExportTableModel();
