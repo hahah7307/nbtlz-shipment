@@ -34,8 +34,8 @@ class LogisticsController extends BaseController
         }
 
         // 查看权限
-//        $access_ids = AccountModel::account_access_ids();
-//        $where['user_id'] = ['in', $access_ids];
+        $access_ids = AccountModel::account_access_ids();
+        $where['user_id'] = ['in', $access_ids];
 
         // 报价单列表
         $quoteTableObj = new LogisticsExportTableModel();
@@ -180,6 +180,13 @@ class LogisticsController extends BaseController
 
         $page_num = $this->request->get('page_num', Config::get('PAGE_NUM'));
         $this->assign('page_num', $page_num);
+
+        // 查看权限
+        $access_ids = AccountModel::account_access_ids();
+        $table['user_id'] = ['in', $access_ids];
+        $tableObj = new LogisticsExportTableModel();
+        $tableIds = $tableObj->where($table)->column('id');
+        $where['table_id'] = ['in', $tableIds];
 
         $storage = new LogisticsExportSkuModel();
         $list = $storage->where($where)->order('table_id desc id asc')->paginate($page_num, false, ['query' => ['keyword' => $keyword, 'page_num' => $page_num]]);
