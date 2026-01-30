@@ -54,7 +54,11 @@ class ExportModel extends Model
             $y = date('y');
             $m = date('m');
         } else {
-            $ym = date('Ym',strtotime('+1 month'));
+            if (in_array(date('d'), ['29', '30', '31'])) {
+                $ym = date('Ym',strtotime('+1 month')) - 1;
+            } else {
+                $ym = date('Ym',strtotime('+1 month'));
+            }
             $y = substr($ym, 2, 2);
             $m = substr($ym, 4, 6);
         }
